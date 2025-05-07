@@ -2,6 +2,7 @@ public abstract class FinancialType {
     protected int typeID;
     protected String description;
     protected int amount;
+    protected int user_id;
     public FinancialType(int typeID, String description, int amount) {
         this.typeID = typeID;
         this.description = description;
@@ -28,6 +29,12 @@ public abstract class FinancialType {
     }
     public void changeAmount(int change) {
         this.amount += change;
+    }
+    public void setUserID(int user_id) {
+        this.user_id = user_id;
+    }
+    public int getUserID() {
+        return user_id;
     }
 }
 

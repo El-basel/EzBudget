@@ -1,8 +1,10 @@
+import FinancialType.*;
+
 import java.sql.*;
 public class Database {
     private static Database instance = null;
     Connection connection = null;
-    static String[] tables_name = {"User", "Income", "Budget", "Expense", "Goal", "Plan", "Reminder"};
+    static String[] tables_name = {"User", "FinancialType.Income", "FinancialType.Budget", "FinancialType.Expense", "Goal", "Plan", "Reminder"};
     private Database() {
         String url = "jdbc:sqlite:budget.db";
         try {
@@ -105,6 +107,18 @@ public class Database {
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("User not found");
+        }
+    }
+    public void insertIncome(Income income) {
+        String query = "INSERT INTO Income (id, source, amount, user_id) VALUES (?, ?, ?, ?);";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, income.getTypeID());
+            statement.setString(2, income.getSource());
+            statement.setInt(1, income.getAmount());
+            statement.setInt(1, income.getUserID());
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("Error inserting income");
         }
     }
 
