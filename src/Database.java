@@ -1,8 +1,9 @@
 import java.sql.*;
 public class Database {
+    private static Database instance = null;
     Connection connection = null;
     static String[] tables_name = {"User", "Income", "Budget", "Expense", "Goal", "Plan", "Reminder"};
-    public Database() {
+    private Database() {
         String url = "jdbc:sqlite:budget.db";
         try {
             connection = DriverManager.getConnection(url);
@@ -14,7 +15,12 @@ public class Database {
             e.printStackTrace();
         }
     }
-
+    public static Database getInstance() {
+        if(instance == null) {
+            instance = new Database();
+        }
+        return instance;
+    }
     private void createTable() throws SQLException {
         String userTable = "CREATE TABLE IF NOT EXISTS User (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -72,4 +78,34 @@ public class Database {
             statement.execute(reminderTable);
         }
     }
+    // TODO: add parameter User when the User class exists
+    public void insertUser() {
+        String query = "INSERT INTO User (username, email, password) VALUES (?, ?, ?);";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+           statement.setString(1, "TMP");
+           statement.setString(2, "TMP");
+           statement.setString(3, "TMP");
+           statement.executeUpdate();
+           System.out.println("Inserted Successfully");
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+    }
+    // TODO: change the return to User when the User class exists
+    public void getUser(String email, String password) {
+        String query = "SELECT * FROM User WHERE email = ? AND password = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            statement.setString(2, password);
+            ResultSet rs = statement.executeQuery();
+            System.out.println("\n-- Users --");
+            while(rs.next()) {
+                System.out.println(rs.getString("username") + " " + rs.getString("email") + " " + rs.getString("password"));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("User not found");
+        }
+    }
+
 }
