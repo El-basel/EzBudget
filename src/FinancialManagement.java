@@ -59,7 +59,7 @@ public class FinancialManagement {
         return database.retrieveBudgets();
     }
 
-    public void analyzeFinancials(String type ,int period){
+    public void analyzeFinancials(String type, int period){
         switch (type){
             case "Spending":
                 System.out.println("Analyzing Spending");
