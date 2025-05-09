@@ -11,4 +11,5 @@
 - [ ] Create the planning class
 - [ ] Create the notification class
 - [ ] Create the reminder class
+- [ ] modify retrieveIncome to provide the user_id as a parameter to be able to use it in the WHERE condition (this modification can be done when the User class is created)
 ## Youssef TODOs
