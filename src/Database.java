@@ -1,5 +1,3 @@
-import FinancialType.*;
-
 import java.sql.*;
 public class Database {
     private static Database instance = null;
@@ -34,18 +32,21 @@ public class Database {
                 "source TEXT NOT NULL," +
                 "amount INTEGER NOT NULL," +
                 "user_id INTEGER NOT NULL," +
+                "insertion_date TEXT DEFAULT CURRENT_DATE," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
         String expenseTable = "CREATE TABLE IF NOT EXISTS Expense (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "item TEXT NOT NULL," +
                 "amount INTEGER NOT NULL," +
                 "user_id INTEGER NOT NULL," +
+                "insertion_date TEXT DEFAULT CURRENT_DATE," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
         String budgetTable = "CREATE TABLE IF NOT EXISTS Budget (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "source TEXT NOT NULL," +
                 "amount INTEGER NOT NULL," +
                 "user_id INTEGER NOT NULL," +
+                "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
         // don't understand it fully
         String goalTable = "CREATE TABLE IF NOT EXISTS Goal (" +
@@ -54,6 +55,7 @@ public class Database {
                 "deadline TIMESTAMP NOT NULL," +
                 "description TEXT NOT NULL," +
                 "user_id INTEGER NOT NULL," +
+                "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
         String planTable = "CREATE TABLE IF NOT EXISTS Plan (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -62,13 +64,15 @@ public class Database {
                 "description TEXT NOT NULL," +
                 "contribution INTEGER NOT NULL," +
                 "user_id INTEGER NOT NULL," +
+                "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
         String reminderTable = "CREATE TABLE IF NOT EXISTS Plan (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "title TEXT NOT NULL," +
-                "date TIMESTAMP NOT NULL," +
+                "date TEXT NOT NULL," +
                 "message TEXT NOT NULL," +
                 "user_id INTEGER NOT NULL," +
+                "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
         try(Statement statement = connection.createStatement()) {
             statement.executeUpdate(userTable);
