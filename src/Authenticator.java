@@ -1,19 +1,19 @@
 public class Authenticator {
 
-    private Database database;
-    public Authenticator(Database database) {
+    private DB database;
+    public Authenticator(DB database) {
         this.database = database;
     }
     public boolean login(String username, String password) {
         User user = database.getUser(username, password);
-        if (user != null) return false;
+        if (user == null) return false;
         return true;
     }
     public boolean register(User user) {
-        database.insertUser(user);
+        if (database.insertUser(user)) return true;
+        return false;
     }
     public boolean VerifyCredentials(String username, String password, String Email) {
-        // Check for null or empty inputs
         if (username == null || username.trim().isEmpty() ||
                 password == null || password.trim().isEmpty() ||
                 Email == null || Email.trim().isEmpty()) {
