@@ -228,9 +228,9 @@ public class Database {
             return null;
         }
     }
-
+    // TODO : Add insert category
     public void insertBudget(Budget budget) {
-        String categoryQuery = "SELECT * FROM Category WHERE id = ?";
+        String categoryQuery = "SELECT * FROM Category WHERE type = ?";
         String category = null;
         try (PreparedStatement statement = connection.prepareStatement(categoryQuery)) {
             statement.setString(1,budget.getCategory());
