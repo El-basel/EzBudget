@@ -5,6 +5,7 @@ public class Database {
     private static Database instance = null;
     Connection connection = null;
     static String[] tables_name = {"User", "Income", "Budget", "Expense", "Goal", "Plan", "Reminder", "Category"};
+    int user_id = 0;
     private Database() {
         String url = "jdbc:sqlite:budget.db";
         try {
@@ -59,8 +60,8 @@ public class Database {
         // don't understand it fully
         String goalTable = "CREATE TABLE IF NOT EXISTS Goal (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "target TEXT NOT NULL," +
-                "deadline TIMESTAMP NOT NULL," +
+                "target INTEGER NOT NULL," +
+                "deadline TEXT NOT NULL," +
                 "description TEXT NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
@@ -96,11 +97,13 @@ public class Database {
     // TODO: add parameter User when the User class exists
     public void insertUser() {
         String query = "INSERT INTO User (username, email, password) VALUES (?, ?, ?);";
+        String user_id_query = "SELECT * FROM User WHERE email = ? AND password = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
            statement.setString(1, "TMP");
            statement.setString(2, "TMP");
            statement.setString(3, "TMP");
            statement.executeUpdate();
+//           user_id = getUser("tmp", "tmp").id;
            System.out.println("Inserted Successfully");
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -113,6 +116,7 @@ public class Database {
             statement.setString(1, email);
             statement.setString(2, password);
             ResultSet rs = statement.executeQuery();
+            user_id = rs.getInt("id");
             System.out.println("\n-- User --");
             if(rs.next()) {
                 System.out.println(rs.getString("username") + " " + rs.getString("email") + " " + rs.getString("password"));
@@ -127,7 +131,7 @@ public class Database {
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, income.getSource());
             statement.setInt(2, income.getAmount());
-            statement.setInt(3, income.getUserID());
+            statement.setInt(3, user_id);
             statement.executeQuery();
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -135,7 +139,7 @@ public class Database {
         }
     }
 
-    public Income[] retrieveIncomes(int user_id) {
+    public Income[] retrieveIncomes() {
         String query = "SELECT * FROM Income WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, user_id);
@@ -154,12 +158,12 @@ public class Database {
         }
     }
 
-    public Income retrieveIncome(int user_id, String source, int amount) {
-        String query = "SELECT * FROM Income WHERE user_id = ? AND source = ? AND amount = ?";
+    public Income retrieveIncome(String source, int amount) {
+        String query = "SELECT * FROM Income WHERE source = ? AND amount = ? AND user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, user_id);
-            statement.setString(2, source);
-            statement.setInt(3, amount);
+            statement.setString(1, source);
+            statement.setInt(2, amount);
+            statement.setInt(3, user_id);
             ResultSet rs = statement.executeQuery();
             if(rs.next()) {
                 return new Income(rs.getString("source"), rs.getInt("amount"));
@@ -178,7 +182,7 @@ public class Database {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, expense.getItem());
             statement.setInt(2, expense.getAmount());
-            statement.setInt(3, expense.getUserID());
+            statement.setInt(3, user_id);
             statement.executeQuery();
         } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -187,7 +191,7 @@ public class Database {
 
     }
 
-    public Expense[] retrieveExpenses(int user_id) {
+    public Expense[] retrieveExpenses() {
         String query = "SELECT * FROM Expense WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, user_id);
@@ -206,12 +210,12 @@ public class Database {
         }
     }
 
-    public Expense retrieveExpense(int user_id, String item, int amount) {
-        String query = "SELECT * FROM Expense WHERE user_id = ? AND item = ? AND amount = ?";
+    public Expense retrieveExpense(String item, int amount) {
+        String query = "SELECT * FROM Expense WHERE item = ? AND amount = ? AND user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, user_id);
-            statement.setString(2, item);
-            statement.setInt(3, amount);
+            statement.setString(1, item);
+            statement.setInt(2, amount);
+            statement.setInt(3, user_id);
             ResultSet rs = statement.executeQuery();
             if(rs.next()) {
                 return new Expense(rs.getString("item"), rs.getInt("amount"));
@@ -238,12 +242,12 @@ public class Database {
         } catch (SQLException e) {
 
         }
-        String query = "INSERT INTO Budget (source, category, amount, user_id) VALUES (?, ?, ?);";
+        String query = "INSERT INTO Budget (source, category, amount, user_id) VALUES (?, ?, ?, ?);";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, budget.getSource());
             statement.setString(2, category);
             statement.setInt(3, budget.getAmount());
-            statement.setInt(4, budget.getUserID());
+            statement.setInt(4, user_id);
             statement.executeQuery();
         } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -252,7 +256,7 @@ public class Database {
 
     }
 
-    public Budget[] retrieveBudgets(int user_id) {
+    public Budget[] retrieveBudgets() {
         String query = "SELECT * FROM Budget WHERE user_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, user_id);
@@ -274,13 +278,13 @@ public class Database {
             return null;
         }
     }
-    public Budget retrieveBudget(int user_id, String source, String amount, String category) {
-        String query = "SELECT * FROM Budget WHERE user_id = ? AND source = ? AND amount = ? and category = ?";
+    public Budget retrieveBudget(String source, String amount, String category) {
+        String query = "SELECT * FROM Budget WHERE source = ? AND amount = ? and category = ? AND user_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, user_id);
-            statement.setString(2, source);
-            statement.setString(3, amount);
-            statement.setString(4, category);
+            statement.setString(1, source);
+            statement.setString(2, amount);
+            statement.setString(3, category);
+            statement.setInt(4, user_id);
             ResultSet rs = statement.executeQuery();
             if(rs.next()) {
                 Budget budget = new Budget(rs.getString("source"), rs.getInt("amount"),
@@ -293,6 +297,28 @@ public class Database {
             System.out.println(e.getMessage());
             e.printStackTrace();
             return null;
+        }
+    }
+    public void insertGoal(Goal goal) {
+        String query;
+        if(goal.getStartDate() != null) {
+            query = "INSERT INTO Goal(target, deadline, description, user_id, insertion_date) VALUES (?, ?, ?, ?, ?);";
+        } else {
+            query = "INSERT INTO Goal(target, deadline, description, user_id) VALUES (?, ?, ?, ?);";
+        }
+        try(PreparedStatement statement = connection.prepareStatement(query) ) {
+            statement.setInt(1, goal.getTarget());
+            statement.setString(2, goal.getEndDate());
+            statement.setString(3, goal.getDiscription());
+            statement.setInt(4, user_id);
+            if(goal.getStartDate() != null) {
+                statement.setString(5, goal.getStartDate());
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error inserting Goal");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }
