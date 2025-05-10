@@ -1,8 +1,8 @@
 # EzBudget
 
 ## Mahmoud TODOs
-- [ ] create Expense methods in Database class
-- [ ] Create Budget methods in Database class
+- [x] create Expense methods in Database class
+- [x] Create Budget methods in Database class
 - [x] Create Goal and SavingPlan classes
 - [ ] Create Goal and SavingPlan methods in Database
 - [ ] Add setCategory(String category) and setPeriod(int period) to budget sub class in financial type
