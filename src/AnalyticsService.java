@@ -5,11 +5,11 @@ public class AnalyticsService {
         this.database = database;
     }
 
-    public void analyzeSpending(int period){
+    public void analyzeSpending(int start, int end){
 
     }
 
-    public void generateReport(int period){
+    public void generateReport(int start, int end){
 
     }
 }
