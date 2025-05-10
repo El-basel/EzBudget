@@ -1,20 +1,12 @@
 public abstract class FinancialType {
-    protected int typeID;
     protected String description;
     protected int amount;
     protected int user_id;
-    public FinancialType(int typeID, String description, int amount) {
-        this.typeID = typeID;
+    public FinancialType(String description, int amount) {
         this.description = description;
         this.amount = amount;
     }
     public FinancialType() {}
-    public int getTypeID() {
-        return typeID;
-    }
-    public void setTypeID(int typeID) {
-        this.typeID = typeID;
-    }
     protected String getDescription() {
         return description;
     }
@@ -39,8 +31,8 @@ public abstract class FinancialType {
 }
 
 class Expense extends FinancialType {
-    public Expense(int typeID, String item, int amount) {
-        super(typeID, item, amount);
+    public Expense(String item, int amount) {
+        super(item, amount);
     }
     public Expense() {}
     public String getItem() {
@@ -52,8 +44,14 @@ class Expense extends FinancialType {
 }
 
 class Budget extends FinancialType {
-    public Budget(int typeID, String source, int amount) {
-        super(typeID, source, amount);
+    private String category;
+    private String start_date = null;
+    private String end_date = null;
+    public Budget(String source, int amount, String category, String start_date, String end_date) {
+        super(source, amount);
+        this.category = category;
+        this.start_date = start_date;
+        this.end_date = end_date;
     }
     public Budget() {}
     public String getSource() {
@@ -62,11 +60,28 @@ class Budget extends FinancialType {
     public void setSource(String source) {
         setDescription(source);
     }
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        //convert the category to its int type
+        this.category = category;
+    }
+    public String getPeriod() {
+        return start_date + " - " + end_date;
+    }
+    public void setPeriod(String end_date) {
+        this.end_date = end_date;
+    }
+    public void setPeriod(String start_date, String end_date) {
+        this.start_date = start_date;
+        this.end_date = end_date;
+    }
 }
 
 class Income extends FinancialType {
-    public Income(int typeID, String source, int amount) {
-        super(typeID, source, amount);
+    public Income(String source, int amount) {
+        super(source, amount);
     }
     public Income() {}
     public String getSource() {
