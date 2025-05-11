@@ -19,12 +19,12 @@ public class FinancialManagement {
         return instance;
     }
 
-    public void addIncome(String source, int amount){
+    public boolean addIncome(String source, int amount){
         Income income = new Income();
         income.setSource(source);
         income.setAmount(amount);
 
-        database.insertIncome(income);
+        return database.insertIncome(income);
     }
 
     public Income getIncome(String source, int amount){
