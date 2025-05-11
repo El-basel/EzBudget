@@ -5,17 +5,17 @@ public class FinancialManagement {
     protected Database database;
     protected AnalyticsService analytics;
     protected Scanner scanner;
-    private FinancialManagement(Database database) {
+    private FinancialManagement() {
         this.database = Database.getInstance();
-        this.analytics = AnalyticsService.getInstance(database);
+        this.analytics = AnalyticsService.getInstance();
         this.scanner = new Scanner(System.in);
     }
 
-    public static FinancialManagement getInstance(Database database) {
+    public static FinancialManagement getInstance() {
         if (instance == null) {
             synchronized (FinancialManagement.class) {
                 if (instance == null) {
-                    instance = new FinancialManagement(database);
+                    instance = new FinancialManagement();
                 }
             }
         }
