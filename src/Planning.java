@@ -1,13 +1,25 @@
 public class Planning {
+    private static Planning instance;
     //figure out how to send emails to user using notification service class
     private NotificationService notificationService;
     private Database database;
     //private User user;
 
     //add user id
-    public Planning(Database database, NotificationService notificationService){
+    private Planning(Database database){
         this.database = database;
-        this.notificationService = notificationService;
+        this.notificationService = NotificationService.getInstance(database);
+    }
+
+    public static Planning getInstance(Database database, NotificationService notificationService){
+        if (instance == null){
+            synchronized (Planning.class) {
+                if (instance == null){
+                    instance = new Planning(database);
+                }
+            }
+        }
+        return instance;
     }
 
     public void setGoal(int target, String startDate, String endDate, String discription){
