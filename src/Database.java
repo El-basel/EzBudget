@@ -278,11 +278,11 @@ public class Database {
             return null;
         }
     }
-    public Budget retrieveBudget(String source, String amount, String category) {
+    public Budget retrieveBudget(String source, int amount, String category) {
         String query = "SELECT * FROM Budget WHERE source = ? AND amount = ? and category = ? AND user_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, source);
-            statement.setString(2, amount);
+            statement.setInt(2, amount);
             statement.setString(3, category);
             statement.setInt(4, user_id);
             ResultSet rs = statement.executeQuery();
