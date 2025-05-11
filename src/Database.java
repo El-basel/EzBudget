@@ -173,16 +173,18 @@ public class Database {
         }
     }
 
-    public void insertExpense(Expense expense) {
+    public boolean insertExpense(Expense expense) {
         String query = "INSERT INTO Expense (item, amount, user_id) VALUES (?, ?, ?);";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, expense.getItem());
             statement.setInt(2, expense.getAmount());
             statement.setInt(3, user_id);
             statement.executeQuery();
+            return true;
         } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("Error Inserting Expense");
+            return false;
         }
 
     }
@@ -225,7 +227,7 @@ public class Database {
         }
     }
     // TODO : Add insert category
-    public void insertBudget(Budget budget) {
+    public boolean insertBudget(Budget budget) {
 //        String categoryQuery = "SELECT * FROM Category WHERE type = ?";
 //        String category = null;
 //        try (PreparedStatement statement = connection.prepareStatement(categoryQuery)) {
@@ -254,9 +256,11 @@ public class Database {
                 statement.setString(6, budget.getStart_date());
             }
             statement.executeQuery();
+            return true;
         } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("Error Inserting Expense");
+            return false;
         }
 
     }
@@ -304,7 +308,7 @@ public class Database {
             return null;
         }
     }
-    public void insertGoal(Goal goal) {
+    public boolean insertGoal(Goal goal) {
         String query;
         if(goal.getStartDate() != null) {
             query = "INSERT INTO Goal(target, deadline, description, user_id, insertion_date) VALUES (?, ?, ?, ?, ?);";
@@ -319,11 +323,55 @@ public class Database {
             if(goal.getStartDate() != null) {
                 statement.setString(5, goal.getStartDate());
             }
-
+            return true;
         } catch (SQLException e) {
             System.out.println("Error inserting Goal");
             System.out.println(e.getMessage());
             e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Goal[] retrieveGoals() {
+        String query = "SELECT * FROM Goal WHERE user_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            ResultSet rs = statement.executeQuery();
+            ArrayList<Goal> goals = new ArrayList<>();
+            while(rs.next()) {
+                Goal goal = new Goal(rs.getInt("target"), rs.getString("insertion_date"),
+                        rs.getString("end_date"), rs.getString("description"));
+                goals.add(goal);
+            }
+            if(!goals.isEmpty()) {
+                return  (Goal[]) goals.toArray();
+            }
+            return null;
+        } catch(SQLException e) {
+            System.out.println("Error retrieving Budgets");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Goal retrieveGoal(int target, String description) {
+        String query = "SELECT * FROM Goal WHERE target = ? AND description = ? AND user_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, target);
+            statement.setString(2, description);
+            statement.setInt(3, user_id);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()) {
+                return new Goal(rs.getInt("target"), rs.getString("insertion_date"),
+                        rs.getString("end_date"), rs.getString("description"));
+            }
+            return null;
+        } catch(SQLException e) {
+            System.out.println("Error retrieving Budgets");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 }
