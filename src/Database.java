@@ -4,7 +4,6 @@ import java.util.ArrayList;
 public class Database {
     private static Database instance = null;
     Connection connection = null;
-    static String[] tables_name = {"User", "Income", "Budget", "Expense", "Goal", "Plan", "Reminder", "Category"};
     int user_id = 0;
     private Database() {
         String url = "jdbc:sqlite:budget.db";
@@ -54,24 +53,15 @@ public class Database {
                 "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
                 "FOREIGN KEY (user_id) REFERENCES User(id))," +
                 "FOREIGN KEY (category) REFERENCES Category(id));";
-        String categoryTable = "CREATE TABLE IF NOT EXISTS Category(" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "type TEXT NOT NULL);";
+//        String categoryTable = "CREATE TABLE IF NOT EXISTS Category(" +
+//                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+//                "type TEXT NOT NULL);";
         // don't understand it fully
         String goalTable = "CREATE TABLE IF NOT EXISTS Goal (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "target INTEGER NOT NULL," +
                 "deadline TEXT NOT NULL," +
                 "description TEXT NOT NULL," +
-                "user_id INTEGER NOT NULL," +
-                "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
-                "FOREIGN KEY (user_id) REFERENCES User(id));";
-        String planTable = "CREATE TABLE IF NOT EXISTS Plan (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "target INTEGER NOT NULL," +
-                "deadline TIMESTAMP NOT NULL," +
-                "description TEXT NOT NULL," +
-                "contribution INTEGER NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
@@ -89,53 +79,59 @@ public class Database {
             statement.executeUpdate(expenseTable);
             statement.executeUpdate(budgetTable);
             statement.executeUpdate(goalTable);
-            statement.executeUpdate(planTable);
             statement.execute(reminderTable);
-            statement.execute(categoryTable);
+//            statement.execute(categoryTable);
         }
     }
-    // TODO: add parameter User when the User class exists
-    public void insertUser() {
+
+    public boolean insertUser(User user) {
         String query = "INSERT INTO User (username, email, password) VALUES (?, ?, ?);";
-        String user_id_query = "SELECT * FROM User WHERE email = ? AND password = ?";
-        try(PreparedStatement statement = connection.prepareStatement(query)) {
-           statement.setString(1, "TMP");
-           statement.setString(2, "TMP");
-           statement.setString(3, "TMP");
+        try(PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+           statement.setString(1, user.getUsername());
+           statement.setString(2, user.getEmail());
+           statement.setString(3, user.getPassword());
            statement.executeUpdate();
-//           user_id = getUser("tmp", "tmp").id;
-           System.out.println("Inserted Successfully");
+           ResultSet generatedKeys = statement.getGeneratedKeys();
+           if (generatedKeys.next()) {
+               user_id = generatedKeys.getInt(1);
+           }
+           if(user_id == 0) {
+               throw new SQLException("Insert failed");
+           }
+           return true;
         } catch (SQLException e) {
+            System.out.println("Error Inserting User");
             System.out.println("SQLException: " + e.getMessage());
+            return false;
         }
     }
-    // TODO: change the return to User when the User class exists
-    public void getUser(String email, String password) {
+
+    public User getUser(String email, String password) {
         String query = "SELECT * FROM User WHERE email = ? AND password = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
             statement.setString(2, password);
             ResultSet rs = statement.executeQuery();
             user_id = rs.getInt("id");
-            System.out.println("\n-- User --");
-            if(rs.next()) {
-                System.out.println(rs.getString("username") + " " + rs.getString("email") + " " + rs.getString("password"));
-            }
+           return new User(rs.getString("username"), rs.getString("password"), rs.getString("email"));
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("User not found");
+            return null;
         }
     }
-    public void insertIncome(Income income) {
+    public boolean insertIncome(Income income) {
         String query = "INSERT INTO Income (source, amount, user_id) VALUES (?, ?, ?);";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, income.getSource());
             statement.setInt(2, income.getAmount());
             statement.setInt(3, user_id);
             statement.executeQuery();
+            return true;
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("Error inserting income");
+            return false;
         }
     }
 
@@ -230,24 +226,33 @@ public class Database {
     }
     // TODO : Add insert category
     public void insertBudget(Budget budget) {
-        String categoryQuery = "SELECT * FROM Category WHERE type = ?";
-        String category = null;
-        try (PreparedStatement statement = connection.prepareStatement(categoryQuery)) {
-            statement.setString(1,budget.getCategory());
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()) {
-                category = rs.getString("type");
-                return;
-            }
-        } catch (SQLException e) {
-
+//        String categoryQuery = "SELECT * FROM Category WHERE type = ?";
+//        String category = null;
+//        try (PreparedStatement statement = connection.prepareStatement(categoryQuery)) {
+//            statement.setString(1,budget.getCategory());
+//            ResultSet rs = statement.executeQuery();
+//            if(rs.next()) {
+//                category = rs.getString("type");
+//                return;
+//            }
+//        } catch (SQLException e) {
+//
+//        }
+        String query;
+        if(budget.getStart_date() != null) {
+            query = "INSERT INTO Budget (source, category, amount, end_date, user_id, insertion_date) VALUES (?, ?, ?, ?, ?, ?);";
+        } else {
+            query = "INSERT INTO Budget (source, category, amount, end_date, user_id) VALUES (?, ?, ?, ?, ?);";
         }
-        String query = "INSERT INTO Budget (source, category, amount, user_id) VALUES (?, ?, ?, ?);";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, budget.getSource());
-            statement.setString(2, category);
+            statement.setString(2, budget.getCategory());
             statement.setInt(3, budget.getAmount());
-            statement.setInt(4, user_id);
+            statement.setString(4, budget.getEnd_date());
+            statement.setInt(5, user_id);
+            if(budget.getStart_date() != null) {
+                statement.setString(6, budget.getStart_date());
+            }
             statement.executeQuery();
         } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
