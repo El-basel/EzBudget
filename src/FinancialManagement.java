@@ -35,12 +35,12 @@ public class FinancialManagement {
         return database.retrieveIncomes();
     }
 
-    public void trackExpense(String item, int amount){
+    public boolean trackExpense(String item, int amount){
         Expense expense = new Expense();
         expense.setItem(item);
         expense.setAmount(amount);
 
-        database.insertExpense(expense);
+        return database.insertExpense(expense);
     }
 
     public Expense getExpense(String item, int amount){
@@ -51,20 +51,20 @@ public class FinancialManagement {
         return database.retrieveExpenses();
     }
 
-    public void createBudget(String category, int limit, String startDate, String endDate){
+    public boolean createBudget(String category, int limit, String startDate, String endDate){
         Budget budget = new Budget();
         budget.setCategory(category);
         budget.setAmount(limit);
         budget.setPeriod(startDate, endDate);
-        database.insertBudget(budget);
+        return database.insertBudget(budget);
     }
 
-    public void createBudget(String category, int limit, String endDate){
+    public boolean createBudget(String category, int limit, String endDate){
         Budget budget = new Budget();
         budget.setCategory(category);
         budget.setAmount(limit);
         budget.setPeriod(endDate);
-        database.insertBudget(budget);
+        return database.insertBudget(budget);
     }
 
     public Budget getBudget(String source, int limit, String category){
