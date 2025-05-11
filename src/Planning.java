@@ -10,9 +10,9 @@ public class Planning {
         this.notificationService = notificationService;
     }
 
-    public void setGoal(int target, String start, String end, String discription){
-        Goal goal = new Goal(target, start, end, discription);
-        //database.insertGoal(goal);
+    public void setGoal(int target, String startDate, String endDate, String discription){
+        Goal goal = new Goal(target, startDate, endDate, discription);
+        database.insertGoal(goal);
     }
 
     public void createSavingPlan(int goal, int startAmount, int monthlyContribution){

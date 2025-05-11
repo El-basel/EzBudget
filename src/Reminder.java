@@ -4,7 +4,6 @@ public class Reminder{
 
     public Reminder(){}
     public Reminder(int userID, String title, String date, String message){
-
         this.userID = userID;
         this.title = title;
         this.date = date;
