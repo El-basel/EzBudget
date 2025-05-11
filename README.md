@@ -7,6 +7,7 @@
 - [ ] Create Goal and SavingPlan methods in Database
 - [ ] Create a method in database to return userID
 - [ ] Add setCategory(String category) and setPeriod(int period) to budget sub class in financial type
+- [ ] In Database class: need to have methods to delete from tables of budget, expense, etc... in case user wants to edit or delete
 ## Fares TODOs
 - [ ] Finish analytics service class
 - [x] Create the planning class
