@@ -51,8 +51,7 @@ public class Database {
                 "end_date TEXT NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
-                "FOREIGN KEY (user_id) REFERENCES User(id))," +
-                "FOREIGN KEY (category) REFERENCES Category(id));";
+                "FOREIGN KEY (user_id) REFERENCES User(id));" ;
 //        String categoryTable = "CREATE TABLE IF NOT EXISTS Category(" +
 //                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
 //                "type TEXT NOT NULL);";
