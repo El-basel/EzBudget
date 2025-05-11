@@ -1,6 +1,6 @@
 public abstract class FinancialType {
     protected String description;
-    protected int amount, user_id;
+    protected int amount;
     public FinancialType(String description, int amount) {
         this.description = description;
         this.amount = amount;
@@ -11,8 +11,6 @@ public abstract class FinancialType {
     public int getAmount() {return amount;}
     public void setAmount(int amount) {this.amount = amount;}
     public void changeAmount(int change) {this.amount += change;}
-    public void setUserID(int user_id) {this.user_id = user_id;}
-    public int getUserID() {return user_id;}
 }
 
 class Expense extends FinancialType {
@@ -37,6 +35,8 @@ class Budget extends FinancialType {
     public String getCategory() {return category;}
     public void setCategory(String category) {this.category = category;}
     public String getPeriod() {return start_date + " - " + end_date;}
+    public String getStart_date() {return start_date;}
+    public String getEnd_date() {return end_date;}
     public void setPeriod(String end_date) {this.end_date = end_date;}
     public void setPeriod(String start_date, String end_date) {
         this.start_date = start_date;
