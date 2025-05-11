@@ -15,51 +15,55 @@ public class FinancialManagement {
         database.insertIncome(income);
     }
 
-    //use retrieve funcs from database
-//    public Income getIncome(int userID){
-//        return database.retrieveIncome(userID);
-//    }
-//
-//    public Income[] getIncomes(){
-//        return database.retrieveIncomes();
-//    }
+    public Income getIncome(String source, int amount){
+        return database.retrieveIncome(source, amount);
+    }
+
+    public Income[] getIncomes(){
+        return database.retrieveIncomes();
+    }
 
     public void trackExpense(String item, int amount){
         Expense expense = new Expense();
         expense.setItem(item);
         expense.setAmount(amount);
 
-        //database.insertExpense(expense);
+        database.insertExpense(expense);
     }
 
-    //retrieve the expense !
-//    public Expense getExpense(int expenseID){
-//        return database.retrieveExpense(expenseID);
-//    }
-//
-//    public Expense[] getExpenses(){
-//        return database.retrieveExpenses();
-//    }
+    public Expense getExpense(String item, int amount){
+        return database.retrieveExpense(item, amount);
+    }
 
-    //add setCategory and setPeriod to budget
-    public void createBudget(String category, int limit, int startDate, int endDate){
+    public Expense[] getExpenses(){
+        return database.retrieveExpenses();
+    }
+
+    public void createBudget(String category, int limit, String startDate, String endDate){
         Budget budget = new Budget();
-        //budget.setCategory(category);
+        budget.setCategory(category);
         budget.setAmount(limit);
-        //budget.setStart(startDate);
-        //budget.setEnd(endDate);
-        //database.insertBudget(budget);
+        budget.setPeriod(startDate, endDate);
+        database.insertBudget(budget);
     }
 
-    //retrieve the budgets !
-//    public Budget getBudget(int budgetID){
-//        return database.retrieveBudget(budgetID);
-//    }
-//
-//    public Budget[] getBudgets(){
-//        return database.retrieveBudgets();
-//    }
+    public void createBudget(String category, int limit, String endDate){
+        Budget budget = new Budget();
+        budget.setCategory(category);
+        budget.setAmount(limit);
+        budget.setPeriod(endDate);
+        database.insertBudget(budget);
+    }
 
+    public Budget getBudget(String source, int limit, String category){
+        return database.retrieveBudget(source, limit, category);
+    }
+
+    public Budget[] getBudgets(){
+        return database.retrieveBudgets();
+    }
+
+    //finish analyzeFinancials!
     public void analyzeFinancials(String type, int startDate, int endDate){
         switch (type){
             case "Spending":
