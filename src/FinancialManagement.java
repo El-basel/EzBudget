@@ -1,10 +1,22 @@
 public class FinancialManagement {
+    private static volatile FinancialManagement instance;
     protected Database database;
     protected AnalyticsService analytics;
 
-    public FinancialManagement(Database database) {
+    private FinancialManagement(Database database) {
         this.database = database;
-        this.analytics = new AnalyticsService(database);
+        this.analytics = AnalyticsService.getInstance(database);
+    }
+
+    public static FinancialManagement getInstance(Database database) {
+        if (instance == null) {
+            synchronized (FinancialManagement.class) {
+                if (instance == null) {
+                    instance = new FinancialManagement(database);
+                }
+            }
+        }
+        return instance;
     }
 
     public void addIncome(String source, int amount){

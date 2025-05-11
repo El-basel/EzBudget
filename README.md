@@ -15,3 +15,4 @@
 - [x] Create and finish the reminder class
 - [x] modify retrieveIncome to provide the user_id as a parameter to be able to use it in the WHERE condition (this modification can be done when the User class is created)
 ## Youssef TODOs
+- [ ] In Authenticator class the getUser should send 'Email' and 'Password' not 'Username'
