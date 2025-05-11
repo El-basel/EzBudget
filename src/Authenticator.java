@@ -2,12 +2,11 @@ public class Authenticator {
 
     private Database database;
     public Authenticator(Database database) {
-        this.database = database;
+        this.database = Database.getInstance();
     }
-    public boolean login(String username, String password) {
-        User user = database.getUser(username, password);
-        if (user == null) return false;
-        return true;
+    public boolean login(String email, String password) {
+        User user = database.getUser(email, password);
+        return user != null;
     }
     public boolean register(User user) {
         if (database.insertUser(user)) return true;

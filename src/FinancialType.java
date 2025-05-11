@@ -21,19 +21,20 @@ class Expense extends FinancialType {
 }
 
 class Budget extends FinancialType {
-    private String category, start_date = null, end_date = null;
+    private String start_date = null, end_date = null;
 
-    public Budget(String source, int amount, String category, String start_date, String end_date) {
-        super(source, amount);
-        this.category = category;
+    public Budget(String category, int amount,  String start_date, String end_date) {
+        super(category, amount);
         this.start_date = start_date;
         this.end_date = end_date;
     }
+    public Budget(String category, int amount, String end_date) {
+        super(category, amount);
+        this.end_date = end_date;
+    }
     public Budget() {}
-    public String getSource() {return getDescription();}
-    public void setSource(String source) {setDescription(source);}
-    public String getCategory() {return category;}
-    public void setCategory(String category) {this.category = category;}
+    public String getCategory() {return getDescription();}
+    public void setCategory(String category) {this.description = category;}
     public String getPeriod() {return start_date + " - " + end_date;}
     public String getStart_date() {return start_date;}
     public String getEnd_date() {return end_date;}
@@ -42,6 +43,8 @@ class Budget extends FinancialType {
         this.start_date = start_date;
         this.end_date = end_date;
     }
+    public int getLimit() {return getAmount();}
+    public void setLimit(int limit) {setAmount(limit);}
 }
 
 class Income extends FinancialType {

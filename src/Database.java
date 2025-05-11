@@ -45,16 +45,13 @@ public class Database {
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
         String budgetTable = "CREATE TABLE IF NOT EXISTS Budget (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "source TEXT NOT NULL," +
                 "category TEXT NOT NULL," +
-                "amount INTEGER NOT NULL," +
+                "limit INTEGER NOT NULL," +
                 "end_date TEXT NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));" ;
-//        String categoryTable = "CREATE TABLE IF NOT EXISTS Category(" +
-//                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-//                "type TEXT NOT NULL);";
+
         // don't understand it fully
         String goalTable = "CREATE TABLE IF NOT EXISTS Goal (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -79,7 +76,6 @@ public class Database {
             statement.executeUpdate(budgetTable);
             statement.executeUpdate(goalTable);
             statement.execute(reminderTable);
-//            statement.execute(categoryTable);
         }
     }
 
@@ -225,34 +221,20 @@ public class Database {
             return null;
         }
     }
-    // TODO : Add insert category
     public boolean insertBudget(Budget budget) {
-//        String categoryQuery = "SELECT * FROM Category WHERE type = ?";
-//        String category = null;
-//        try (PreparedStatement statement = connection.prepareStatement(categoryQuery)) {
-//            statement.setString(1,budget.getCategory());
-//            ResultSet rs = statement.executeQuery();
-//            if(rs.next()) {
-//                category = rs.getString("type");
-//                return;
-//            }
-//        } catch (SQLException e) {
-//
-//        }
         String query;
         if(budget.getStart_date() != null) {
-            query = "INSERT INTO Budget (source, category, amount, end_date, user_id, insertion_date) VALUES (?, ?, ?, ?, ?, ?);";
+            query = "INSERT INTO Budget (category, limit, end_date, user_id, insertion_date) VALUES (?, ?, ?, ?, ?);";
         } else {
-            query = "INSERT INTO Budget (source, category, amount, end_date, user_id) VALUES (?, ?, ?, ?, ?);";
+            query = "INSERT INTO Budget (category, limit, end_date, user_id) VALUES (?, ?, ?, ?);";
         }
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, budget.getSource());
-            statement.setString(2, budget.getCategory());
-            statement.setInt(3, budget.getAmount());
-            statement.setString(4, budget.getEnd_date());
-            statement.setInt(5, user_id);
+            statement.setString(1, budget.getCategory());
+            statement.setInt(2, budget.getLimit());
+            statement.setString(3, budget.getEnd_date());
+            statement.setInt(4, user_id);
             if(budget.getStart_date() != null) {
-                statement.setString(6, budget.getStart_date());
+                statement.setString(5, budget.getStart_date());
             }
             statement.executeQuery();
             return true;
@@ -271,8 +253,8 @@ public class Database {
             ResultSet rs = statement.executeQuery();
             ArrayList<Budget> budgets = new ArrayList<>();
             while(rs.next()) {
-                Budget budget = new Budget(rs.getString("source"), rs.getInt("amount"),
-                        rs.getString("category"), rs.getString("insertion_date"), rs.getString("end_date"));
+                Budget budget = new Budget(rs.getString("category"), rs.getInt("limit"),
+                       rs.getString("insertion_date"), rs.getString("end_date"));
                 budgets.add(budget);
             }
             if(!budgets.isEmpty()) {
@@ -286,17 +268,16 @@ public class Database {
             return null;
         }
     }
-    public Budget retrieveBudget(String source, int amount, String category) {
-        String query = "SELECT * FROM Budget WHERE source = ? AND amount = ? and category = ? AND user_id = ?";
+    public Budget retrieveBudget(String category, int limit) {
+        String query = "SELECT * FROM Budget WHERE limit = ? and category = ? AND user_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, source);
-            statement.setInt(2, amount);
-            statement.setString(3, category);
-            statement.setInt(4, user_id);
+            statement.setInt(1, limit);
+            statement.setString(2, category);
+            statement.setInt(3, user_id);
             ResultSet rs = statement.executeQuery();
             if(rs.next()) {
-                Budget budget = new Budget(rs.getString("source"), rs.getInt("amount"),
-                        rs.getString("category"), rs.getString("insertion_date"), rs.getString("end_date"));
+                Budget budget = new Budget(rs.getString("category"), rs.getInt("limit"),
+                        rs.getString("insertion_date"), rs.getString("end_date"));
                 return budget;
             }
             return null;
