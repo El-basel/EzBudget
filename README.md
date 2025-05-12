@@ -12,6 +12,6 @@
 - [x] Create the planning class
 - [x] Create and finish the reminder class
 - [x] modify retrieveIncome to provide the user_id as a parameter to be able to use it in the WHERE condition (this modification can be done when the User class is created)
-- [ ] Find way to check for notification reminder
+- [ ] Find way to check for notification reminder and finish it in planning class
 ## Youssef TODOs
 - [ ] In Authenticator class the getUser should send 'Email' and 'Password' not 'Username'
