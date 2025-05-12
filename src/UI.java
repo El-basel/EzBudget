@@ -40,10 +40,77 @@ public class UI {
     }
 
     private void displayLoggedInMenu() {
-        System.out.println("\n===== Welcome, " + currentUser.getUsername() + "! =====");
-        System.out.println("You are now logged in.");
-        // Add more menu options for logged-in users as needed
-        System.out.println("Logging out and exiting...");
+        while (loggedIn) {
+            System.out.println("\n===== Welcome, " + currentUser.getUsername() + "! =====");
+            System.out.println("1. Add Income");
+            System.out.println("2. Track Expense");
+            System.out.println("3. Create Budget");
+            System.out.println("4. View Incomes");
+            System.out.println("5. View Expenses");
+            System.out.println("6. View Budgets");
+            System.out.println("7. Logout");
+            System.out.print("Enter your choice: ");
+
+            int choice = getUserChoice(1, 7);
+            switch (choice) {
+                case 1:
+                    if (currentUser.addIncome())
+                        System.out.println("Income added successfully.");
+                    else
+                        System.out.println("Failed to add income.");
+                    break;
+                case 2:
+                    if (currentUser.trackExpense())
+                        System.out.println("Expense tracked successfully.");
+                    else
+                        System.out.println("Failed to track expense.");
+                    break;
+                case 3:
+                    if (currentUser.createBudget())
+                        System.out.println("Budget created successfully.");
+                    else
+                        System.out.println("Failed to create budget.");
+                    break;
+                case 4:
+                    String[] incomes = currentUser.Incomes();
+                    if (incomes.length == 0) {
+                        System.out.println("No income records found.");
+                    } else {
+                        System.out.println("Incomes:");
+                        for (String income : incomes) {
+                            System.out.println("- " + income);
+                        }
+                    }
+                    break;
+                case 5:
+                    String[] expenses = currentUser.expense();
+                    if (expenses.length == 0) {
+                        System.out.println("No expense records found.");
+                    } else {
+                        System.out.println("Expenses:");
+                        for (String expense : expenses) {
+                            System.out.println("- " + expense);
+                        }
+                    }
+                    break;
+                case 6:
+                    String[] budgets = currentUser.budgets();
+                    if (budgets.length == 0) {
+                        System.out.println("No budget records found.");
+                    } else {
+                        System.out.println("Budgets:");
+                        for (String budget : budgets) {
+                            System.out.println("- " + budget);
+                        }
+                    }
+                    break;
+                case 7:
+                    System.out.println("Logging out...");
+                    loggedIn = false;
+                    currentUser = null;
+                    break;
+            }
+        }
     }
     private int getUserChoice(int min, int max) {
         int choice = -1;
