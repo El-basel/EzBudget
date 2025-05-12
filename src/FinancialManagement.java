@@ -179,7 +179,7 @@ public class FinancialManagement {
 
 
     //finish analyzeFinancials!
-    public void analyzeFinancials(String type, int startDate, int endDate){
+    public void analyzeFinancials(String type, String startDate, String endDate){
         switch (type){
             case "Spending":
                 System.out.println("Analyzing Spending");
