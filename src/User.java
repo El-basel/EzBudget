@@ -39,6 +39,7 @@ public class User {
 
     public String[] Incomes() {
         Income[] income = financialmanagement.getIncomes();
+        if (income == null || income.length == 0) return new String[0];
         String[] incomeStrings = new String[income.length];
         for (int i = 0; i < income.length; i++) {
             incomeStrings[i] = income[i].toString();
@@ -48,6 +49,7 @@ public class User {
 
     public String[] budgets() {
         Budget[] budget = financialmanagement.getBudgets();
+        if (budget == null || budget.length == 0) return new String[0];
         String[] budgetStrings = new String[budget.length];
         for (int i = 0; i < budget.length; i++) {
             budgetStrings[i] = budget[i].toString();
@@ -57,11 +59,11 @@ public class User {
 
     public String[] expense() {
         Expense[] expense = financialmanagement.getExpenses();
+        if (expense == null || expense.length == 0) return new String[0];
         String[] expenseStrings = new String[expense.length];
         for (int i = 0; i < expense.length; i++) {
             expenseStrings[i] = expense[i].toString();
         }
         return expenseStrings;
     }
-
 }
