@@ -1,10 +1,18 @@
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * A class to handle database insertion and retrieval
+ * @author Mahmoud
+ */
 public class Database {
     private static Database instance = null;
     Connection connection = null;
     int user_id = 0;
+
+    /**
+     * A private constructor for creating a singleton
+     */
     private Database() {
         String url = "jdbc:sqlite:budget.db";
         try {
@@ -17,12 +25,22 @@ public class Database {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Returns an instance or creates a new one and returns it if one didn't exist
+     * @return an instance of Database
+     */
     public static Database getInstance() {
         if(instance == null) {
             instance = new Database();
         }
         return instance;
     }
+
+    /**
+     * Creates the table if they don't exist, called in the constructor
+     * @throws SQLException if the creation didn't success
+     */
     private void createTable() throws SQLException {
         String userTable = "CREATE TABLE IF NOT EXISTS User (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -79,6 +97,11 @@ public class Database {
         }
     }
 
+    /**
+     * Inserting user in
+     * @param user contains user information required for the insertion
+     * @return true if the insertion succeeded otherwise false
+     */
     public boolean insertUser(User user) {
         String query = "INSERT INTO User (username, email, password) VALUES (?, ?, ?);";
         try(PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -101,6 +124,12 @@ public class Database {
         }
     }
 
+    /**
+     * Return a user that exists in the database
+     * @param email
+     * @param password
+     * @return user with the provided email and password otherwise null is returned
+     */
     public User getUser(String email, String password) {
         String query = "SELECT * FROM User WHERE email = ? AND password = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -115,6 +144,12 @@ public class Database {
             return null;
         }
     }
+
+    /**
+     * Inserts income in the database with the provided information
+     * @param income income's information to be inserted
+     * @return true if the insertion succeeded otherwise false
+     */
     public boolean insertIncome(Income income) {
         String query = "INSERT INTO Income (source, amount, user_id) VALUES (?, ?, ?);";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
@@ -129,7 +164,10 @@ public class Database {
             return false;
         }
     }
-
+    /**
+     * Returns all incomes for the user currently registered
+     * @return an array of type Income that corresponds to the registered user otherwise null is returned
+     */
     public Income[] retrieveIncomes() {
         String query = "SELECT * FROM Income WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -167,7 +205,11 @@ public class Database {
             return null;
         }
     }
-
+    /**
+     * Inserts an expense in the database with the provided information
+     * @param expense expense's information to be inserted
+     * @return true if the insertion succeeded otherwise false
+     */
     public boolean insertExpense(Expense expense) {
         String query = "INSERT INTO Expense (item, amount, user_id) VALUES (?, ?, ?);";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -183,7 +225,10 @@ public class Database {
         }
 
     }
-
+    /**
+     * Returns all expenses for the user currently registered
+     * @return an array of type Expense that corresponds to the registered user otherwise null is returned
+     */
     public Expense[] retrieveExpenses() {
         String query = "SELECT * FROM Expense WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -221,6 +266,11 @@ public class Database {
             return null;
         }
     }
+    /**
+     * Inserts a budget in the database with the provided information
+     * @param budget budget's information to be inserted
+     * @return true if the insertion succeeded otherwise false
+     */
     public boolean insertBudget(Budget budget) {
         String query;
         if(budget.getStart_date() != null) {
@@ -245,7 +295,10 @@ public class Database {
         }
 
     }
-
+    /**
+     * Returns all budgets for the user currently registered
+     * @return an array of type Budget that corresponds to the registered user otherwise null is returned
+     */
     public Budget[] retrieveBudgets() {
         String query = "SELECT * FROM Budget WHERE user_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
@@ -288,6 +341,11 @@ public class Database {
             return null;
         }
     }
+    /**
+     * Inserts a goal in the database with the provided information
+     * @param goal goal's information to be inserted
+     * @return true if the insertion succeeded otherwise false
+     */
     public boolean insertGoal(Goal goal) {
         String query;
         query = "INSERT INTO Goal(target, amount, description, user_id) VALUES (?, ?, ?, ?);";
@@ -305,7 +363,10 @@ public class Database {
             return false;
         }
     }
-
+    /**
+     * Returns all goals for the user currently registered
+     * @return an array of type Goal that corresponds to the registered user otherwise null is returned
+     */
     public Goal[] retrieveGoals() {
         String query = "SELECT * FROM Goal WHERE user_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
@@ -347,7 +408,11 @@ public class Database {
             return null;
         }
     }
-
+    /**
+     * Inserts a reminder in the database with the provided information
+     * @param reminder reminder's information to be inserted
+     * @return true if the insertion succeeded otherwise false
+     */
     public boolean insertReminder(Reminder reminder) {
         String query = "INSERT INTO Reminder (title, reminder_date, message) VALUES (?, ?, ?);";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
@@ -362,7 +427,10 @@ public class Database {
             return false;
         }
     }
-
+    /**
+     * Returns all reminders for the user currently registered
+     * @return an array of type Reminder that corresponds to the registered user otherwise null is returned
+     */
     public Reminder[] retrieveReminders() {
         String query = "SELECT * FROM Reminder WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -380,6 +448,44 @@ public class Database {
             System.out.println(e.getMessage());
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Sums user's incomes
+     * @return The total sum of user's incomes
+     */
+    public int incomeSum() {
+        String query = "SELECT SUM(amount) AS amount_sum FROM Income WHERE user_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()) {
+                return rs.getInt("amount_sum");
+            }
+            return 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Sums user's expenses
+     * @return The total sum of user's expenses
+     */
+    public int expenseSum() {
+        String query = "SELECT SUM(amount) AS amount_sum FROM Expense WHERE user_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()) {
+                return rs.getInt("amount_sum");
+            }
+            return 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return 0;
         }
     }
 }
