@@ -6,8 +6,8 @@ public class UI {
     private boolean loggedIn = false;
     private User currentUser = null;
 
-    public UI(Authenticator authenticator) {
-        this.authenticator = authenticator;
+    public UI() {
+        this.authenticator = Authenticator.getInstance();
         this.scanner = new Scanner(System.in);
     }
 
@@ -62,18 +62,17 @@ public class UI {
 
     private void handleLogin() {
         System.out.println("\n===== Login =====");
-        System.out.print("Enter username: ");
+        System.out.print("Enter Email: ");
         String username = scanner.nextLine();
 
-        System.out.print("Enter password: ");
+        System.out.print("Enter Password: ");
         String password = scanner.nextLine();
-
-        if (authenticator.login(username, password)) {
+        currentUser = authenticator.login(username, password);
+        if (currentUser != null) {
             System.out.println("Login successful!");
             loggedIn = true;
-            currentUser = new User(username, password, "");
         } else {
-            System.out.println("Login failed! Invalid username or password.");
+            System.out.println("Login failed! Invalid Email or Password.");
         }
     }
 
@@ -107,6 +106,7 @@ public class UI {
         User newUser = new User(username, password, email);
 
         if (authenticator.register(newUser)) {
+            currentUser = newUser;
             System.out.println("Registration successful! You can now login.");
         } else {
             System.out.println("Registration failed! Username or email already exists.");

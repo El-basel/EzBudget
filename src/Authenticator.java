@@ -1,16 +1,20 @@
 public class Authenticator {
-
+    private static Authenticator authenticator = null;
     private Database database;
-    public Authenticator(Database database) {
+    private Authenticator() {
         this.database = Database.getInstance();
     }
-    public boolean login(String email, String password) {
-        User user = database.getUser(email, password);
-        return user != null;
+    public static Authenticator getInstance() {
+        if(authenticator == null) {
+            authenticator = new Authenticator();
+        }
+        return authenticator;
+    }
+    public User login(String email, String password) {
+        return database.getUser(email, password);
     }
     public boolean register(User user) {
-        if (database.insertUser(user)) return true;
-        return false;
+        return database.insertUser(user);
     }
     public boolean VerifyCredentials(String username, String password, String Email) {
         if (username == null || username.trim().isEmpty() ||

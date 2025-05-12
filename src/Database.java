@@ -49,7 +49,7 @@ public class Database {
                 "password TEXT NOT NULL);";
         String incomeTable = "CREATE TABLE IF NOT EXISTS Income (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "source TEXT NOT NULL," +
+                "[source] TEXT NOT NULL," +
                 "amount INTEGER NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT CURRENT_DATE," +
@@ -64,7 +64,7 @@ public class Database {
         String budgetTable = "CREATE TABLE IF NOT EXISTS Budget (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "category TEXT NOT NULL," +
-                "limit INTEGER NOT NULL," +
+                "[limit] INTEGER NOT NULL," +
                 "end_date TEXT NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
@@ -112,9 +112,8 @@ public class Database {
            ResultSet generatedKeys = statement.getGeneratedKeys();
            if (generatedKeys.next()) {
                user_id = generatedKeys.getInt(1);
-           }
-           if(user_id == 0) {
-               throw new SQLException("Insert failed");
+           } else {
+               throw new SQLException("Failed to insert user");
            }
            return true;
         } catch (SQLException e) {
@@ -136,8 +135,11 @@ public class Database {
             statement.setString(1, email);
             statement.setString(2, password);
             ResultSet rs = statement.executeQuery();
-            user_id = rs.getInt("id");
-           return new User(rs.getString("username"), rs.getString("password"), rs.getString("email"));
+            if(rs.next()) {
+                user_id = rs.getInt("id");
+                return new User(rs.getString("username"), rs.getString("password"), rs.getString("email"));
+            }
+            return null;
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("User not found");
