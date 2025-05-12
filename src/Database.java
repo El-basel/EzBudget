@@ -496,4 +496,31 @@ public class Database {
             return 0;
         }
     }
+
+    /**
+     * Returns all expenses between a specific period
+     * @param start_date the start of the period
+     * @param end_date the end of the period
+     * @return an array of expenses in that period
+     */
+    public Expense[] retrieveExpenseFromPeriod(String start_date, String end_date) {
+        String query = "SELECT * FROM Expense WHERE user_id = ? AND date(insertiond_date) BETWEEN date(?) AND date(?);";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            statement.setString(2, start_date);
+            statement.setString(3, end_date);
+            ResultSet rs = statement.executeQuery();
+            ArrayList<Income> expenses = new ArrayList<>();
+            while(rs.next()) {
+                Income income = new Income(rs.getString("item"), rs.getInt("amount"));
+                expenses.add(income);
+            }
+            return  (Expense[]) expenses.toArray();
+        } catch (Exception e) {
+            System.out.println("Error retrieving Incomes");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
