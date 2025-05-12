@@ -65,9 +65,9 @@ public class Database {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "category TEXT NOT NULL," +
                 "[limit] INTEGER NOT NULL," +
-                "end_date TEXT NOT NULL," +
+                "end_date DATE NOT NULL," +
                 "user_id INTEGER NOT NULL," +
-                "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
+                "insertion_date TEXT DEFAULT (date('now'))," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));" ;
 
         // don't understand it fully
@@ -118,7 +118,7 @@ public class Database {
            return true;
         } catch (SQLException e) {
             System.out.println("Error Inserting User");
-            System.out.println("SQLException: " + e.getMessage());
+//            System.out.println("SQLException: " + e.getMessage());
             return false;
         }
     }
@@ -141,7 +141,7 @@ public class Database {
             }
             return null;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+//            System.out.println("SQLException: " + e.getMessage());
             System.out.println("User not found");
             return null;
         }
@@ -161,7 +161,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
+//            System.out.println("SQLException: " + e.getMessage());
             System.out.println("Error inserting income");
             return false;
         }
@@ -186,8 +186,8 @@ public class Database {
             return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return null;
         }
     }
@@ -205,8 +205,8 @@ public class Database {
             return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return null;
         }
     }
@@ -224,7 +224,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (Exception e) {
-            System.out.println("SQLException: " + e.getMessage());
+//            System.out.println("SQLException: " + e.getMessage());
             System.out.println("Error Inserting Expense");
             return false;
         }
@@ -250,8 +250,8 @@ public class Database {
             return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return null;
         }
     }
@@ -269,8 +269,8 @@ public class Database {
             return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return null;
         }
     }
@@ -282,9 +282,9 @@ public class Database {
     public boolean insertBudget(Budget budget) {
         String query;
         if(budget.getStart_date() != null) {
-            query = "INSERT INTO Budget (category, limit, end_date, user_id, insertion_date) VALUES (?, ?, ?, ?, ?);";
+            query = "INSERT INTO Budget (category, [limit], end_date, user_id, insertion_date) VALUES (?, ?, ?, ?, ?);";
         } else {
-            query = "INSERT INTO Budget (category, limit, end_date, user_id) VALUES (?, ?, ?, ?);";
+            query = "INSERT INTO Budget (category, [limit], end_date, user_id) VALUES (?, ?, ?, ?);";
         }
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, budget.getCategory());
@@ -297,7 +297,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (Exception e) {
-            System.out.println("SQLException: " + e.getMessage());
+//            System.out.println("SQLException: " + e.getMessage());
             System.out.println("Error Inserting Expense");
             return false;
         }
@@ -324,13 +324,13 @@ public class Database {
             return null;
         } catch(SQLException e) {
             System.out.println("Error retrieving Budgets");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return null;
         }
     }
     public Budget retrieveBudget(String category, int limit) {
-        String query = "SELECT * FROM Budget WHERE limit = ? and category = ? AND user_id = ?";
+        String query = "SELECT * FROM Budget WHERE [limit] = ? and category = ? AND user_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, limit);
             statement.setString(2, category);
@@ -344,8 +344,8 @@ public class Database {
             return null;
         } catch (SQLException e) {
             System.out.println("Error retrieving Budget");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return null;
         }
     }
@@ -367,8 +367,8 @@ public class Database {
             return true;
         } catch (SQLException e) {
             System.out.println("Error inserting Goal");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return false;
         }
     }
@@ -392,8 +392,8 @@ public class Database {
             return null;
         } catch(SQLException e) {
             System.out.println("Error retrieving Budgets");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return null;
         }
     }
@@ -412,8 +412,8 @@ public class Database {
             return null;
         } catch(SQLException e) {
             System.out.println("Error retrieving Budgets");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
             return null;
         }
     }
@@ -432,7 +432,7 @@ public class Database {
             return true;
         } catch (SQLException e) {
             System.out.println("Error Inserting User");
-            System.out.println("SQLException: " + e.getMessage());
+//            System.out.println("SQLException: " + e.getMessage());
             return false;
         }
     }
