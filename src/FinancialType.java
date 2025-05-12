@@ -50,6 +50,16 @@ public abstract class FinancialType {
      * @param change The amount to add (can be positive or negative)
      */
     public void changeAmount(int change) {this.amount += change;}
+
+    /**
+     * Provides a default toString implementation for financial types.
+     * @return A string representation of the financial type
+     */
+    @Override
+    public String toString() {
+        return String.format("Financial Type: %s, Amount: $%d",
+                description == null ? "Unspecified" : description, amount);
+    }
 }
 
 /**
@@ -77,6 +87,16 @@ class Expense extends FinancialType {
      * @param item The new expense item to be set
      */
     public void setItem(String item) {setDescription(item);}
+
+    /**
+     * Overrides toString to provide a specific representation for Expenses.
+     * @return A detailed string representation of the expense
+     */
+    @Override
+    public String toString() {
+        return String.format("Expense: %s, Amount Spent: $%d",
+                description == null ? "Unspecified Item" : description, amount);
+    }
 }
 
 /**
@@ -164,6 +184,27 @@ class Budget extends FinancialType {
      * @param limit The new budget limit to be set
      */
     public void setLimit(int limit) {setAmount(limit);}
+
+    /**
+     * Overrides toString to provide a specific representation for Budgets.
+     * @return A detailed string representation of the budget
+     */
+    @Override
+    public String toString() {
+        // Handle cases where start_date or end_date might be null
+        String periodString = (start_date == null && end_date == null)
+                ? "Unspecified Period"
+                : (start_date == null
+                ? "Until " + end_date
+                : (end_date == null
+                ? "From " + start_date
+                : start_date + " - " + end_date));
+
+        return String.format("Budget Category: %s, Budget Limit: $%d, Period: %s",
+                description == null ? "Unspecified" : description,
+                amount,
+                periodString);
+    }
 }
 
 /**
@@ -191,4 +232,14 @@ class Income extends FinancialType {
      * @param source The new income source to be set
      */
     public void setSource(String source) {setDescription(source);}
+
+    /**
+     * Overrides toString to provide a specific representation for Income.
+     * @return A detailed string representation of the income
+     */
+    @Override
+    public String toString() {
+        return String.format("Income Source: %s, Amount Received: $%d",
+                description == null ? "Unspecified Source" : description, amount);
+    }
 }

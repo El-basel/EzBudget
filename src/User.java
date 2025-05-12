@@ -1,17 +1,16 @@
 public class User {
-    private Integer id;
     private String username;
     private String password;
     private String email;
+    private FinancialManagement financialmanagement;
+    private Planning planning;
+    private Reminder reminder;
 
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
-    }
-
-    public Integer getId() {
-        return id;
+        this.financialmanagement = FinancialManagement.getInstance(); // Initialize singleton
     }
 
     public String getUsername() {
@@ -26,7 +25,43 @@ public class User {
         return email;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public boolean addIncome() {
+        return financialmanagement.addIncome();
     }
+
+    public boolean trackExpense() {
+        return financialmanagement.trackExpense();
+    }
+
+    public boolean createBudget() {
+        return financialmanagement.createBudget();
+    }
+
+    public String[] Incomes() {
+        Income[] income = financialmanagement.getIncomes();
+        String[] incomeStrings = new String[income.length];
+        for (int i = 0; i < income.length; i++) {
+            incomeStrings[i] = income[i].toString();
+        }
+        return incomeStrings;
+    }
+
+    public String[] budgets() {
+        Budget[] budget = financialmanagement.getBudgets();
+        String[] budgetStrings = new String[budget.length];
+        for (int i = 0; i < budget.length; i++) {
+            budgetStrings[i] = budget[i].toString();
+        }
+        return budgetStrings;
+    }
+
+    public String[] expense() {
+        Expense[] expense = financialmanagement.getExpenses();
+        String[] expenseStrings = new String[expense.length];
+        for (int i = 0; i < expense.length; i++) {
+            expenseStrings[i] = expense[i].toString();
+        }
+        return expenseStrings;
+    }
+
 }
