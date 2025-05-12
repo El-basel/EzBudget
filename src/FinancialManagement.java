@@ -1,3 +1,7 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
 public class FinancialManagement {
@@ -33,6 +37,21 @@ public class FinancialManagement {
         } catch (NumberFormatException e) {
             System.err.println(input + " " + error_message);
             return -1;
+        }
+    }
+
+    private boolean valid_date(String input) {
+        try {
+            if(input.equals("T") || input.equals("t")) {
+                return true;
+            }
+            DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd")
+                    .withResolverStyle(ResolverStyle.STRICT);
+            LocalDate.parse(input, isoFormatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            System.err.println(input + " is not a valid date");
+            return false;
         }
     }
 
@@ -138,8 +157,14 @@ public class FinancialManagement {
         }
         System.out.println("Insert Start Date (If you want to the start date to be today type 'T': ");
         String start_date = scanner.nextLine();
+        if(!valid_date(start_date)) {
+            return false;
+        }
         System.out.println("Insert End Date: ");
         String end_date = scanner.nextLine();
+        if(!valid_date(end_date)) {
+            return false;
+        }
         Budget budget;
         if(start_date.equals("T")) {
             budget = new Budget(category, limit, end_date);
