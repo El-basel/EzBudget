@@ -2,15 +2,15 @@ public class AnalyticsService {
     private static volatile AnalyticsService instance;
     private Database database;
 
-    private AnalyticsService(Database database) {
-        this.database = database;
+    private AnalyticsService() {
+        this.database = Database.getInstance();
     }
 
-    public static AnalyticsService getInstance(Database database) {
+    public static AnalyticsService getInstance() {
         if (instance == null) {
             synchronized (AnalyticsService.class) {
                 if (instance == null) {
-                    instance = new AnalyticsService(database);
+                    instance = new AnalyticsService();
                 }
             }
         }

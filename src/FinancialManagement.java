@@ -151,14 +151,32 @@ public class FinancialManagement {
     }
 
 
-    public Budget getBudget(String source, int limit, String category){
-
-        return database.retrieveBudget(category, limit);
+    public Budget getBudget(){
+        System.out.println("Enter Category Name: ");
+        String category = scanner.nextLine();
+        if(category.isBlank()) {
+            System.out.println("Empty input");
+            return null;
+        }
+        System.out.println("Enter Budget Limit: ");
+        String unparsed_limit = scanner.nextLine();
+        int limit = parse_int(unparsed_limit, "is not a valid limit, it should be a number");
+        if(limit == -1){
+            return null;
+        }
+        Budget[] budgets = database.retrieveBudgets();
+        for (Budget budget : budgets) {
+            if (budget.getCategory().equals(category) && budget.getAmount() == limit) {
+                return budget;
+            }
+        }
+        return null;
     }
 
     public Budget[] getBudgets(){
         return database.retrieveBudgets();
     }
+
 
     //finish analyzeFinancials!
     public void analyzeFinancials(String type, int startDate, int endDate){

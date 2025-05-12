@@ -56,15 +56,15 @@ public class Database {
         String goalTable = "CREATE TABLE IF NOT EXISTS Goal (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "target INTEGER NOT NULL," +
-                "deadline TEXT NOT NULL," +
+                "amount INTEGER NOT NULL," +
                 "description TEXT NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
                 "FOREIGN KEY (user_id) REFERENCES User(id));";
-        String reminderTable = "CREATE TABLE IF NOT EXISTS Plan (" +
+        String reminderTable = "CREATE TABLE IF NOT EXISTS Reminder (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "title TEXT NOT NULL," +
-                "date TEXT NOT NULL," +
+                "reminder_date TEXT NOT NULL," +
                 "message TEXT NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT CURRENT_TIMESTAMP," +
@@ -290,19 +290,13 @@ public class Database {
     }
     public boolean insertGoal(Goal goal) {
         String query;
-        if(goal.getStartDate() != null) {
-            query = "INSERT INTO Goal(target, deadline, description, user_id, insertion_date) VALUES (?, ?, ?, ?, ?);";
-        } else {
-            query = "INSERT INTO Goal(target, deadline, description, user_id) VALUES (?, ?, ?, ?);";
-        }
+        query = "INSERT INTO Goal(target, amount, description, user_id) VALUES (?, ?, ?, ?);";
+
         try(PreparedStatement statement = connection.prepareStatement(query) ) {
             statement.setInt(1, goal.getTarget());
-            statement.setString(2, goal.getEndDate());
-            statement.setString(3, goal.getDiscription());
+            statement.setInt(2, goal.getSaving_amount());
+            statement.setString(3, goal.getDescription());
             statement.setInt(4, user_id);
-            if(goal.getStartDate() != null) {
-                statement.setString(5, goal.getStartDate());
-            }
             return true;
         } catch (SQLException e) {
             System.out.println("Error inserting Goal");
@@ -319,8 +313,7 @@ public class Database {
             ResultSet rs = statement.executeQuery();
             ArrayList<Goal> goals = new ArrayList<>();
             while(rs.next()) {
-                Goal goal = new Goal(rs.getInt("target"), rs.getString("insertion_date"),
-                        rs.getString("end_date"), rs.getString("description"));
+                Goal goal = new Goal(rs.getInt("target"), rs.getInt("amount"), rs.getString("description"));
                 goals.add(goal);
             }
             if(!goals.isEmpty()) {
@@ -335,20 +328,55 @@ public class Database {
         }
     }
 
-    public Goal retrieveGoal(int target, String description) {
-        String query = "SELECT * FROM Goal WHERE target = ? AND description = ? AND user_id = ?";
+    public Goal retrieveGoal(int target, int saving_amount, String description) {
+        String query = "SELECT * FROM Goal WHERE target = ? AND amount = ? AND description = ? AND user_id = ?";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, target);
-            statement.setString(2, description);
-            statement.setInt(3, user_id);
+            statement.setInt(2, saving_amount);
+            statement.setString(3, description);
+            statement.setInt(4, user_id);
             ResultSet rs = statement.executeQuery();
             if(rs.next()) {
-                return new Goal(rs.getInt("target"), rs.getString("insertion_date"),
-                        rs.getString("end_date"), rs.getString("description"));
+                return new Goal(rs.getInt("target"), rs.getInt("amount"), rs.getString("description"));
             }
             return null;
         } catch(SQLException e) {
             System.out.println("Error retrieving Budgets");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean insertReminder(Reminder reminder) {
+        String query = "INSERT INTO Reminder (title, reminder_date, message) VALUES (?, ?, ?);";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, reminder.getTitle());
+            statement.setString(2, reminder.getDate());
+            statement.setString(3, reminder.getMessage());
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error Inserting User");
+            System.out.println("SQLException: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Reminder[] retrieveReminders() {
+        String query = "SELECT * FROM Reminder WHERE user_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            ResultSet rs = statement.executeQuery();
+            ArrayList<Reminder> reminders = new ArrayList<>();
+            while(rs.next()) {
+                Reminder reminder = new Reminder(rs.getString("title"), rs.getString("reminder_date")
+                , rs.getString("message"));
+                reminders.add(reminder);
+            }
+            return  (Reminder[]) reminders.toArray();
+        } catch (Exception e) {
+            System.out.println("Error retrieving Incomes");
             System.out.println(e.getMessage());
             e.printStackTrace();
             return null;
