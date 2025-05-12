@@ -453,12 +453,16 @@ public class Database {
 
     /**
      * Sums user's incomes
+     * @param start_date The start of the date range
+     * @param end_date The end of the date range
      * @return The total sum of user's incomes
      */
-    public int incomeSum() {
-        String query = "SELECT SUM(amount) AS amount_sum FROM Income WHERE user_id = ?";
+    public int incomeSum(String start_date, String end_date) {
+        String query = "SELECT SUM(amount) AS amount_sum FROM Income WHERE user_id = ? AND date(insertion_date) BETWEEN date(?) AND date(?);";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, user_id);
+            statement.setString(2, start_date);
+            statement.setString(3, end_date);
             ResultSet rs = statement.executeQuery();
             if(rs.next()) {
                 return rs.getInt("amount_sum");
@@ -472,12 +476,16 @@ public class Database {
 
     /**
      * Sums user's expenses
+     * @param start_date The start of the date range
+     * @param end_date The end of the date range
      * @return The total sum of user's expenses
      */
-    public int expenseSum() {
-        String query = "SELECT SUM(amount) AS amount_sum FROM Expense WHERE user_id = ?";
+    public int expenseSum(String start_date, String end_date) {
+        String query = "SELECT SUM(amount) AS amount_sum FROM Expense WHERE user_id = ? AND date(insertion_date) BETWEEN date(?) AND date(?);";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, user_id);
+            statement.setString(2, start_date);
+            statement.setString(3, end_date);
             ResultSet rs = statement.executeQuery();
             if(rs.next()) {
                 return rs.getInt("amount_sum");
