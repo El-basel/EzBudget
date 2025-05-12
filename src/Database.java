@@ -180,7 +180,10 @@ public class Database {
                 Income income = new Income(rs.getString("source"), rs.getInt("amount"));
                 incomes.add(income);
             }
-            return  (Income[]) incomes.toArray();
+            if(incomes.size() != 0) {
+                return  (Income[]) incomes.toArray();
+            }
+            return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
             System.out.println(e.getMessage());
@@ -241,7 +244,10 @@ public class Database {
                 Income income = new Income(rs.getString("item"), rs.getInt("amount"));
                 expenses.add(income);
             }
-            return  (Expense[]) expenses.toArray();
+            if(!expenses.isEmpty()) {
+                return  (Expense[]) expenses.toArray();
+            }
+            return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
             System.out.println(e.getMessage());
@@ -444,7 +450,10 @@ public class Database {
                 , rs.getString("message"));
                 reminders.add(reminder);
             }
-            return  (Reminder[]) reminders.toArray();
+            if(!reminders.isEmpty()) {
+                return  (Reminder[]) reminders.toArray();
+            }
+            return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
             System.out.println(e.getMessage());
@@ -517,7 +526,10 @@ public class Database {
                 Income income = new Income(rs.getString("item"), rs.getInt("amount"));
                 expenses.add(income);
             }
-            return  (Expense[]) expenses.toArray();
+            if(!expenses.isEmpty()) {
+                return  (Expense[]) expenses.toArray();
+            }
+            return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
             System.out.println(e.getMessage());
