@@ -2,15 +2,15 @@ public class NotificationService{
     private static volatile NotificationService instance;
     private Database database;
 
-    private NotificationService(Database database) {
-        this.database = database;
+    private NotificationService() {
+        this.database = Database.getInstance();
     }
 
-    public static NotificationService getInstance(Database database) {
+    public static NotificationService getInstance() {
         if (instance == null) {
             synchronized (NotificationService.class) {
                 if (instance == null) {
-                    instance = new NotificationService(database);
+                    instance = new NotificationService();
                 }
             }
         }
