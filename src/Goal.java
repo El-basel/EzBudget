@@ -12,7 +12,7 @@ class Goal {
     private int saving_amount;
 
     /** A descriptive text explaining the purpose of the goal. */
-    private String description = 0;
+    private String description;
 
     /**
      * Constructs a new Goal with specified target, current savings, and description.
