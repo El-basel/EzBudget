@@ -11,7 +11,7 @@ public class Planning {
     //add user id
     private Planning(){
         this.database = Database.getInstance();
-        this.notificationService = NotificationService.getInstance(database);
+        this.notificationService = NotificationService.getInstance();
         this.scanner = new Scanner(System.in);
     }
 
@@ -29,7 +29,7 @@ public class Planning {
         }
     }
 
-    public static Planning getInstance(NotificationService notificationService){
+    public static Planning getInstance(){
         if (instance == null){
             synchronized (Planning.class) {
                 if (instance == null){
