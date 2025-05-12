@@ -158,7 +158,7 @@ public class Database {
             statement.setString(1, income.getSource());
             statement.setInt(2, income.getAmount());
             statement.setInt(3, user_id);
-            statement.executeQuery();
+            statement.executeUpdate();
             return true;
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -181,7 +181,7 @@ public class Database {
                 incomes.add(income);
             }
             if(incomes.size() != 0) {
-                return  (Income[]) incomes.toArray();
+                return  incomes.toArray(new Income[0]);
             }
             return null;
         } catch (Exception e) {
@@ -221,7 +221,7 @@ public class Database {
             statement.setString(1, expense.getItem());
             statement.setInt(2, expense.getAmount());
             statement.setInt(3, user_id);
-            statement.executeQuery();
+            statement.executeUpdate();
             return true;
         } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -239,13 +239,13 @@ public class Database {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, user_id);
             ResultSet rs = statement.executeQuery();
-            ArrayList<Income> expenses = new ArrayList<>();
+            ArrayList<Expense> expenses = new ArrayList<>();
             while(rs.next()) {
-                Income income = new Income(rs.getString("item"), rs.getInt("amount"));
-                expenses.add(income);
+                Expense expense = new Expense(rs.getString("item"), rs.getInt("amount"));
+                expenses.add(expense);
             }
             if(!expenses.isEmpty()) {
-                return  (Expense[]) expenses.toArray();
+                return  expenses.toArray(new Expense[0]);
             }
             return null;
         } catch (Exception e) {
@@ -294,7 +294,7 @@ public class Database {
             if(budget.getStart_date() != null) {
                 statement.setString(5, budget.getStart_date());
             }
-            statement.executeQuery();
+            statement.executeUpdate();
             return true;
         } catch (Exception e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -319,7 +319,7 @@ public class Database {
                 budgets.add(budget);
             }
             if(!budgets.isEmpty()) {
-                return  (Budget[]) budgets.toArray();
+                return  budgets.toArray(new Budget[0]);
             }
             return null;
         } catch(SQLException e) {
@@ -363,6 +363,7 @@ public class Database {
             statement.setInt(2, goal.getSaving_amount());
             statement.setString(3, goal.getDescription());
             statement.setInt(4, user_id);
+            statement.executeUpdate();
             return true;
         } catch (SQLException e) {
             System.out.println("Error inserting Goal");
@@ -386,7 +387,7 @@ public class Database {
                 goals.add(goal);
             }
             if(!goals.isEmpty()) {
-                return  (Goal[]) goals.toArray();
+                return  goals.toArray(new Goal[0]);
             }
             return null;
         } catch(SQLException e) {
@@ -451,7 +452,7 @@ public class Database {
                 reminders.add(reminder);
             }
             if(!reminders.isEmpty()) {
-                return  (Reminder[]) reminders.toArray();
+                return  reminders.toArray(new Reminder[0]);
             }
             return null;
         } catch (Exception e) {
@@ -521,13 +522,13 @@ public class Database {
             statement.setString(2, start_date);
             statement.setString(3, end_date);
             ResultSet rs = statement.executeQuery();
-            ArrayList<Income> expenses = new ArrayList<>();
+            ArrayList<Expense> expenses = new ArrayList<>();
             while(rs.next()) {
-                Income income = new Income(rs.getString("item"), rs.getInt("amount"));
-                expenses.add(income);
+                Expense expense = new Expense(rs.getString("item"), rs.getInt("amount"));
+                expenses.add(expense);
             }
             if(!expenses.isEmpty()) {
-                return  (Expense[]) expenses.toArray();
+                return   expenses.toArray(new Expense[0]);
             }
             return null;
         } catch (Exception e) {
