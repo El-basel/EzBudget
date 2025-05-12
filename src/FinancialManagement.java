@@ -4,17 +4,39 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.Scanner;
 
+/**
+ * Responsible for handling income, expenses, budgets, and financial analysis.
+ * Provides interfaces to interact with user input and persists financial records.
+ *
+ * @author Fares
+ */
 public class FinancialManagement {
+    /** Singleton instance of FinancialManagement */
     private static volatile FinancialManagement instance;
+
+    /** Instance of Database for database operations */
     protected Database database;
+
+    /** Instance of AnalyticsService for analytics operations */
     protected AnalyticsService analytics;
+
+    /** Scanner for taking input from the user */
     protected Scanner scanner;
+
+    /**
+     * Initializes the database, analytics service, and scanner.
+     */
     private FinancialManagement() {
         this.database = Database.getInstance();
         this.analytics = AnalyticsService.getInstance();
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Retrieves the singleton instance of FinancialManagement.
+     *
+     * @return The singleton instance of FinancialManagement
+     */
     public static FinancialManagement getInstance() {
         if (instance == null) {
             synchronized (FinancialManagement.class) {
@@ -26,6 +48,13 @@ public class FinancialManagement {
         return instance;
     }
 
+    /**
+     * Parses a string to an integer and validates its correctness.
+     *
+     * @param input The string input to be parsed
+     * @param error_message The error message to display on failure
+     * @return The parsed integer or -1 on error
+     */
     private int parse_int(String input, String error_message) {
         int num = -1;
         try {
@@ -40,6 +69,12 @@ public class FinancialManagement {
         }
     }
 
+    /**
+     * Validates a date input in format (yyyy-MM-dd) or 'T' for today's date.
+     *
+     * @param input The date string to validate
+     * @return true if the input is valid, false otherwise
+     */
     private boolean valid_date(String input) {
         try {
             if(input.equals("T") || input.equals("t")) {
@@ -55,6 +90,12 @@ public class FinancialManagement {
         }
     }
 
+    /**
+     * Prompts the user for income details (ie {@code Source} and {@code Amount}) and creates
+     * a new instance in the database corresponding to the recorded details.
+     *
+     * @return {@code True} if income was added successfully, false otherwise
+     */
     public boolean addIncome(){
         System.out.println("Insert Income Source: ");
         String source = scanner.nextLine();
@@ -72,6 +113,11 @@ public class FinancialManagement {
         return database.insertIncome(income);
     }
 
+    /**
+     * Retrieves a specific income record based on user-provided source and amount.
+     *
+     * @return The matched income object, or null if not found
+     */
     public Income getIncome(){
         System.out.println("Enter Income Source: ");
         String source = scanner.nextLine();
@@ -94,10 +140,21 @@ public class FinancialManagement {
         return null;
     }
 
+    /**
+     * Retrieves all recorded income entries from the database.
+     *
+     * @return An array of Income objects
+     */
     public Income[] getIncomes(){
         return database.retrieveIncomes();
     }
 
+    /**
+     * Prompts the user for Expense details (ie. {@code Item Name} and {@code Amount}) and creates
+     * a new instance in the database corresponding to the recorded details.
+     *
+     * @return True if expense was tracked successfully, false otherwise
+     */
     public boolean trackExpense(){
         System.out.println("Insert Item Name: ");
         String item = scanner.nextLine();
@@ -116,6 +173,11 @@ public class FinancialManagement {
         return database.insertExpense(expense);
     }
 
+    /**
+     * Retrieves a specific expense record based on user input.
+     *
+     * @return The matched Expense object, or null if not found
+     */
     public Expense getExpense(){
         System.out.println("Enter Item Name: ");
         String item = scanner.nextLine();
@@ -138,10 +200,21 @@ public class FinancialManagement {
         return null;
     }
 
+    /**
+     * Retrieves all recorded expense entries from the database.
+     *
+     * @return An array of Expense objects
+     */
     public Expense[] getExpenses(){
         return database.retrieveExpenses();
     }
 
+    /**
+     * Prompts the user for Budget details (ie. {@code Category}, {@code Limit}, {@code Start Date}, and {@code End Date}) and creates
+     * a new instance in the database corresponding to the inputed details.
+     *
+     * @return True if the budget was successfully created, false otherwise
+     */
     public boolean createBudget(){
         System.out.println("Insert Budget Category: ");
         String category = scanner.nextLine();
@@ -175,7 +248,11 @@ public class FinancialManagement {
         return database.insertBudget(budget);
     }
 
-
+    /**
+     * Retrieves a specific budget record based on user-provided category and amount.
+     *
+     * @return The matched Budget object, or null if not found
+     */
     public Budget getBudget(){
         System.out.println("Enter Category Name: ");
         String category = scanner.nextLine();
@@ -198,12 +275,23 @@ public class FinancialManagement {
         return null;
     }
 
+    /**
+     * Retrieves all recorded budget entries from the database.
+     *
+     * @return An array of Budget objects
+     */
     public Budget[] getBudgets(){
         return database.retrieveBudgets();
     }
 
 
-    //finish analyzeFinancials!
+    /**
+     * Analyzes financial data within a specified date range using the analytics service.
+     *
+     * @param type The type of analysis to perform ("Spending" or "Report")
+     * @param startDate The start date of the analysis period
+     * @param endDate The end date of the analysis period
+     */
     public void analyzeFinancials(String type, String startDate, String endDate){
         switch (type){
             case "Spending":
