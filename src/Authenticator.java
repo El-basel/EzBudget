@@ -52,7 +52,7 @@ public class Authenticator {
      *
      * @param username the username to be validated.
      * @param password the password to be validated.
-     * @param email    the email to be validated.
+     * @param Email    the email to be validated.
      * @return true if the credentials are valid, false otherwise.
      */
     public boolean VerifyCredentials(String username, String password, String Email) {
