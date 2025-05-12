@@ -3,24 +3,20 @@ import org.w3c.dom.ls.LSOutput;
 import java.sql.SQLOutput;
 
 public class AnalyticsService {
-    private static volatile AnalyticsService instance;
+    private static AnalyticsService instance;
     private Database database;
     private Planning planning;
-    private FinancialManagement financialManagement;
+//    private FinancialManagement financialManagement;
 
     private AnalyticsService() {
         this.database = Database.getInstance();
-        this.financialManagement = FinancialManagement.getInstance();
+//        this.financialManagement = FinancialManagement.getInstance();
         this.planning = Planning.getInstance();
     }
 
     public static AnalyticsService getInstance() {
         if (instance == null) {
-            synchronized (AnalyticsService.class) {
-                if (instance == null) {
-                    instance = new AnalyticsService();
-                }
-            }
+            instance = new AnalyticsService();
         }
         return instance;
     }
@@ -71,7 +67,7 @@ public class AnalyticsService {
 
     public void analyzeSpending(String start, String end) {
         int totalExpenses = database.expenseSum(start, end);
-        Expense[] expenses = financialManagement.getExpenses();
+        Expense[] expenses = database.retrieveExpenses();
 
         System.out.println("|=====================================|");
         System.out.println("|          Spending Analysis          |");
@@ -85,8 +81,8 @@ public class AnalyticsService {
 
     public void generateReport(String start, String end){
         Expense[] expenses = database.retrieveExpenseFromPeriod(start, end);
-        Income[] incomes = financialManagement.getIncomes();
-        Budget[] budgets = financialManagement.getBudgets();
+        Income[] incomes = database.retrieveIncomes();
+        Budget[] budgets = database.retrieveBudgets();
         Goal[] goals = planning.getGoals();
 
         int totalExpenses = database.expenseSum(start, end);
