@@ -1,16 +1,26 @@
 import java.util.Scanner;
 
+/**
+ * Represents the user interface for interacting with the personal budgeting system.
+ * It handles login, registration, and the display of different menus for managing finances.
+ * @author Youssef
+ */
 public class UI {
     private Scanner scanner;
     private Authenticator authenticator;
     private boolean loggedIn = false;
     private User currentUser = null;
-
+    /**
+     * Constructs a new UI instance and initializes the Authenticator and Scanner objects.
+     */
     public UI() {
         this.authenticator = Authenticator.getInstance();
         this.scanner = new Scanner(System.in);
     }
-
+    /**
+     * Starts the user interface by displaying the main menu and handling login or registration.
+     * Once logged in, it displays the logged-in menu for further actions.
+     */
     public void start() {
         System.out.println("Welcome");
         while (!loggedIn) {
@@ -30,7 +40,9 @@ public class UI {
         }
         displayLoggedInMenu();
     }
-
+    /**
+     * Displays the main menu with options to login, register, or exit.
+     */
     private void displayMainMenu() {
         System.out.println("\n===== Main Menu =====");
         System.out.println("1. Login");
@@ -38,7 +50,10 @@ public class UI {
         System.out.println("3. Exit");
         System.out.print("Enter your choice: ");
     }
-
+    /**
+     * Displays the logged-in menu with options for managing finances and logging out.
+     * Allows the user to add income, track expenses, create a budget, and view financial records.
+     */
     private void displayLoggedInMenu() {
         while (loggedIn) {
             System.out.println("\n===== Welcome, " + currentUser.getUsername() + "! =====");
@@ -50,7 +65,6 @@ public class UI {
             System.out.println("6. View Budgets");
             System.out.println("7. Logout");
             System.out.print("Enter your choice: ");
-
             int choice = getUserChoice(1, 7);
             switch (choice) {
                 case 1:
@@ -112,6 +126,14 @@ public class UI {
             }
         }
     }
+    /**
+     * Prompts the user to enter a valid number between the given range.
+     * Ensures the input is an integer and within the specified bounds.
+     *
+     * @param min the minimum valid number
+     * @param max the maximum valid number
+     * @return the user's choice as an integer
+     */
     private int getUserChoice(int min, int max) {
         int choice = -1;
         while (choice < min || choice > max) {
@@ -126,12 +148,14 @@ public class UI {
         }
         return choice;
     }
-
+    /**
+     * Handles the login process by prompting the user for their email and password.
+     * Attempts to authenticate the user and sets the currentUser if login is successful.
+     */
     private void handleLogin() {
         System.out.println("\n===== Login =====");
         System.out.print("Enter Email: ");
         String username = scanner.nextLine();
-
         System.out.print("Enter Password: ");
         String password = scanner.nextLine();
         currentUser = authenticator.login(username, password);
@@ -142,36 +166,30 @@ public class UI {
             System.out.println("Login failed! Invalid Email or Password.");
         }
     }
-
+    /**
+     * Handles the registration process by prompting the user for their credentials.
+     * Verifies the credentials and registers a new user if they are valid.
+     */
     private void handleRegistration() {
         System.out.println("\n===== Registration =====");
-
         String username, password, email;
         boolean validCredentials = false;
-
         do {
             System.out.print("Enter username (minimum 3 characters): ");
             username = scanner.nextLine();
-
             System.out.print("Enter password (minimum 8 characters): ");
             password = scanner.nextLine();
-
             System.out.print("Enter email: ");
             email = scanner.nextLine();
-
             validCredentials = authenticator.VerifyCredentials(username, password, email);
-
             if (!validCredentials) {
                 System.out.println("Invalid credentials! Please ensure:");
                 System.out.println("- Username is at least 3 characters");
                 System.out.println("- Password is at least 8 characters");
                 System.out.println("- Email is in a valid format");
             }
-
         } while (!validCredentials);
-
         User newUser = new User(username, password, email);
-
         if (authenticator.register(newUser)) {
             currentUser = newUser;
             System.out.println("Registration successful! You can now login.");
