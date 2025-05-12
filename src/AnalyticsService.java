@@ -84,7 +84,7 @@ public class AnalyticsService {
     }
 
     public void generateReport(String start, String end){
-        Expense[] expenses = financialManagement.getExpenses();
+        Expense[] expenses = database.retrieveExpenseFromPeriod(start, end);
         Income[] incomes = financialManagement.getIncomes();
         Budget[] budgets = financialManagement.getBudgets();
         Goal[] goals = planning.getGoals();
