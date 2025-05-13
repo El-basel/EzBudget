@@ -93,7 +93,7 @@ public class Database {
             statement.executeUpdate(expenseTable);
             statement.executeUpdate(budgetTable);
             statement.executeUpdate(goalTable);
-            statement.execute(reminderTable);
+            statement.executeUpdate(reminderTable);
         }
     }
 
@@ -431,7 +431,7 @@ public class Database {
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Error Inserting User");
+            System.out.println("Error Inserting Reminder");
 //            System.out.println("SQLException: " + e.getMessage());
             return false;
         }
@@ -516,7 +516,7 @@ public class Database {
      * @return an array of expenses in that period
      */
     public Expense[] retrieveExpenseFromPeriod(String start_date, String end_date) {
-        String query = "SELECT * FROM Expense WHERE user_id = ? AND date(insertiond_date) BETWEEN date(?) AND date(?);";
+        String query = "SELECT * FROM Expense WHERE user_id = ? AND date(insertion_date) BETWEEN date(?) AND date(?);";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, user_id);
             statement.setString(2, start_date);
