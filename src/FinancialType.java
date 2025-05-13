@@ -51,15 +51,6 @@ public abstract class FinancialType {
      */
     public void changeAmount(int change) {this.amount += change;}
 
-    /**
-     * Provides a default toString implementation for financial types.
-     * @return A string representation of the financial type
-     */
-    @Override
-    public String toString() {
-        return String.format("Financial Type: %s, Amount: $%d",
-                description == null ? "Unspecified" : description, amount);
-    }
 }
 
 /**
