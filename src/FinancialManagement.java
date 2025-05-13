@@ -268,12 +268,12 @@ public class FinancialManagement {
         if(limit == -1){
             return false;
         }
-        System.out.println("Insert Start Date (If you want to the start date to be today type 'T': ");
+        System.out.println("Insert Start Date 'YYYY-MM-DD' (If you want to the start date to be today type 'T': ");
         String start_date = scanner.nextLine();
         if(!valid_date(start_date)) {
             return false;
         }
-        System.out.println("Insert End Date: ");
+        System.out.println("Insert End Date 'YYYY-MM-DD': ");
         String end_date = scanner.nextLine();
         if(!valid_date(end_date)) {
             return false;
@@ -346,21 +346,58 @@ public class FinancialManagement {
 
     /**
      * Analyzes financial data within a specified date range using the analytics service.
-     *
-     * @param type The type of analysis to perform ("Spending" or "Report")
-     * @param startDate The start date of the analysis period
-     * @param endDate The end date of the analysis period
      */
-    public void analyzeFinancials(String type, String startDate, String endDate){
-        switch (type){
-            case "Spending":
-                System.out.println("Analyzing Spending");
-                analytics.analyzeSpending(startDate, endDate);
-                break;
-            case "Report":
-                System.out.println("Generating Report");
-                analytics.generateReport(startDate, endDate);
-                break;
+    public void analyzeFinancials(){
+        while(true){
+            System.out.println("What type of financials do you want to analyze? ");
+            System.out.println("1. Spending");
+            System.out.println("2. Generate Report");
+            int choice = getUserChoice(1, 2);
+
+            System.out.println("Insert Start Date 'YYYY-MM-DD' (If you want to the start date to be today type 'T': ");
+            String startDate = scanner.nextLine();
+            if(!valid_date(startDate)) {
+                continue;
+            }
+            System.out.println("Insert End Date 'YYYY-MM-DD' : ");
+            String endDate = scanner.nextLine();
+            if(!valid_date(endDate)) {
+                continue;
+            }
+
+            switch (choice){
+                case 1:
+                    System.out.println("Analyzing Spending");
+                    analytics.analyzeSpending(startDate, endDate);
+                    break;
+                case 2:
+                    System.out.println("Generating Report");
+                    analytics.generateReport(startDate, endDate);
+                    break;
+            }
         }
+    }
+
+    /**
+     * Prompts the user to enter a valid number between the given range.
+     * Ensures the input is an integer and within the specified bounds.
+     *
+     * @param min the minimum valid number
+     * @param max the maximum valid number
+     * @return the user's choice as an integer
+     */
+    private int getUserChoice(int min, int max) {
+        int choice = -1;
+        while (choice < min || choice > max) {
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+                if (choice < min || choice > max) {
+                    System.out.print("Please enter a number between " + min + " and " + max + ": ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Please enter a number: ");
+            }
+        }
+        return choice;
     }
 }

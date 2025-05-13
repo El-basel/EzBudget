@@ -483,11 +483,12 @@ public class Database {
      * @return true if the insertion succeeded otherwise false
      */
     public boolean insertReminder(Reminder reminder) {
-        String query = "INSERT INTO Reminder (title, reminder_date, message) VALUES (?, ?, ?);";
+        String query = "INSERT INTO Reminder (title, reminder_date, message, user_id) VALUES (?, ?, ?, ?);";
         try(PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, reminder.getTitle());
             statement.setString(2, reminder.getDate());
             statement.setString(3, reminder.getMessage());
+            statement.setInt(4, user_id);
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -593,6 +594,111 @@ public class Database {
             return null;
         } catch (Exception e) {
             System.out.println("Error retrieving Incomes");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves all reminders scheduled for a specific date.
+     *
+     * @param date The date to retrieve reminders for (format: yyyy-MM-dd)
+     * @return An array of Reminder objects for the specified date or null if none found
+     */
+    public Reminder[] retrieveRemindersForDate(String date) {
+        String query = "SELECT * FROM Reminder WHERE user_id = ? AND date(reminder_date) = date(?)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            statement.setString(2, date);
+            ResultSet rs = statement.executeQuery();
+            ArrayList<Reminder> reminders = new ArrayList<>();
+            while(rs.next()) {
+                Reminder reminder = new Reminder(rs.getString("title"), rs.getString("reminder_date"),
+                        rs.getString("message"));
+                reminders.add(reminder);
+            }
+            if(!reminders.isEmpty()) {
+                return reminders.toArray(new Reminder[0]);
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error retrieving reminders for date: " + date);
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves all reminders scheduled for today.
+     *
+     * @return An array of Reminder objects for today or null if none found
+     */
+    public Reminder[] retrieveTodayReminders() {
+        String query = "SELECT * FROM Reminder WHERE user_id = ? AND date(reminder_date) = date('now')";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            ResultSet rs = statement.executeQuery();
+            ArrayList<Reminder> reminders = new ArrayList<>();
+            while(rs.next()) {
+                Reminder reminder = new Reminder(rs.getString("title"), rs.getString("reminder_date"),
+                        rs.getString("message"));
+                reminders.add(reminder);
+            }
+            if(!reminders.isEmpty()) {
+                return reminders.toArray(new Reminder[0]);
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error retrieving today's reminders");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves a reminder based on its ID.
+     *
+     * @param reminderID The ID of the reminder to retrieve
+     * @return The Reminder object or null if not found
+     */
+    public Reminder getReminderById(int reminderID) {
+        String query = "SELECT * FROM Reminder WHERE id = ? AND user_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, reminderID);
+            statement.setInt(2, user_id);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()) {
+                return new Reminder(rs.getString("title"), rs.getString("reminder_date"),
+                        rs.getString("message"));
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error retrieving reminder by ID");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Returns the currently logged-in user.
+     *
+     * @return The User object for the currently logged-in user or null if not available
+     */
+    public User getCurrentUser() {
+        String query = "SELECT * FROM User WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()) {
+                return new User(rs.getString("username"), rs.getString("password"), rs.getString("email"));
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error retrieving current user");
             System.out.println(e.getMessage());
             e.printStackTrace();
             return null;

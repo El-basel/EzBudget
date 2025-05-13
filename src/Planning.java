@@ -79,21 +79,6 @@ public class Planning {
     }
 
     /**
-     * Sets a new reminder with given parameters.
-     *
-     * @param title The reminder's title
-     * @param date The date of the reminder
-     * @param message The message for the reminder
-     */
-    public void setReminder(String title, String date, String message){
-        Reminder reminder = new Reminder();
-        reminder.setTitle(title);
-        reminder.setDate(date);
-        reminder.setMessage(message);
-//        database.insertReminder(reminder);
-    }
-
-    /**
      * Prompts the user to create a new goal with input validation.
      *
      * @return true if the goal was successfully created and stored, otherwise false
@@ -225,6 +210,27 @@ public class Planning {
      */
     public Reminder[] getReminders() {
         return database.retrieveReminders();
+    }
+
+    /**
+     * Sends notifications for all reminders scheduled for today.
+     *
+     * @return The number of notifications sent
+     */
+    public int sendTodayReminders() {
+        return notificationService.sendTodayReminders();
+    }
+
+    /**
+     * Configure the email notification service settings.
+     *
+     * @param senderEmail The email address to send notifications from
+     * @param password The password or app password for the sender email
+     * @param smtpHost The SMTP host server
+     * @param smtpPort The SMTP port number
+     */
+    public void configureNotifications(String senderEmail, String password, String smtpHost, int smtpPort) {
+        notificationService.configureEmailSender(senderEmail, password, smtpHost, smtpPort);
     }
 
 }

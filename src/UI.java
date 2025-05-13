@@ -57,13 +57,14 @@ public class UI {
     private void displayLoggedInMenu() {
         while (loggedIn) {
             System.out.println("\n===== Welcome, " + currentUser.getUsername() + "! =====");
-            System.out.println("1. Add Income               2.  Track Expense");
-            System.out.println("3. Create Budget            4.  View Incomes");
-            System.out.println("5. View Expenses            6.  View Budgets");
-            System.out.println("7. Add Spending to a Budget 8.  Delete an Income");
-            System.out.println("9. Delete an Expense        10. Logout");
+            System.out.println("1.  Add Income               2.  Track Expense");
+            System.out.println("3.  Create Budget            4.  View Incomes");
+            System.out.println("5.  View Expenses            6.  View Budgets");
+            System.out.println("7.  Add Spending to a Budget 8.  Delete an Income");
+            System.out.println("9.  Delete an Expense        10. Create Reminder");
+            System.out.println("11. Analyze Financials       12. Logout");
             System.out.print("Enter your choice: ");
-            int choice = getUserChoice(1, 10);
+            int choice = getUserChoice(1, 12);
             String[] incomes = currentUser.Incomes();
             String[] expenses = currentUser.expense();
             String[] budgets = currentUser.budgets();
@@ -146,11 +147,23 @@ public class UI {
                     }
                     break;
                 case 10:
+                    if(currentUser.createReminder()){
+                        System.out.println("Reminder created successfully.");
+                    }
+                    else{
+                        System.out.println("Failed to create reminder.");
+                    }
+                    break;
+                case 11:
+                    currentUser.analyzeFinancials();
+                    break;
+                case 12:
                     System.out.println("Logging out...");
                     loggedIn = false;
                     currentUser = null;
                     break;
             }
+            checkReminders();
         }
     }
     /**
@@ -223,5 +236,20 @@ public class UI {
         } else {
             System.out.println("Registration failed! Username or email already exists.");
         }
+    }
+
+    /**
+     * Configures Emailing settings, and checks if there is any reminders
+     * for today.
+     */
+    private void checkReminders() {
+        Planning.getInstance().configureNotifications(
+                "email@gmail.com", //app email
+                "app-password", //app password NOT REAL PASSWORD
+                "smtp.gmail.com",
+                587
+        );
+
+        Planning.getInstance().sendTodayReminders();
     }
 }

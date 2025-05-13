@@ -9,7 +9,6 @@ public class User {
     private String email;
     private FinancialManagement financialmanagement;
     private Planning planning;
-    private Reminder reminder;
 
     /**
      * Constructs a new User with the given username, password, and email.
@@ -23,7 +22,8 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.financialmanagement = FinancialManagement.getInstance(); // Initialize singleton
+        this.financialmanagement = FinancialManagement.getInstance();
+        this.planning = Planning.getInstance();
     }
 
     /**
@@ -90,6 +90,13 @@ public class User {
     }
 
     /**
+     * Creates a reminder using the Planning instance.
+     *
+     * @return true if the reminder was created successfully, false otherwise
+     */
+    public boolean createReminder() { return planning.createReminder(); }
+
+    /**
      * Add spending to a budget
      * @return true if the addition succeeded otherwise false
      */
@@ -138,5 +145,12 @@ public class User {
             expenseStrings[i] = expense[i].toString();
         }
         return expenseStrings;
+    }
+
+    /**
+     * Refers to the analysis function in the FinancialManagement class
+     */
+    public void analyzeFinancials() {
+        financialmanagement.analyzeFinancials();
     }
 }
