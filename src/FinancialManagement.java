@@ -369,11 +369,11 @@ public class FinancialManagement {
                 case 1:
                     System.out.println("Analyzing Spending");
                     analytics.analyzeSpending(startDate, endDate);
-                    break;
+                    return;
                 case 2:
                     System.out.println("Generating Report");
                     analytics.generateReport(startDate, endDate);
-                    break;
+                    return;
             }
         }
     }

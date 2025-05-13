@@ -22,6 +22,10 @@ public class AnalyticsService {
     }
 
     public void printExpenses(Expense[] expenses) {
+        if (expenses == null || expenses.length == 0) {
+            System.out.println("+ No expenses found.");
+            return;
+        }
         System.out.println("+ Total Expenses: " + expenses.length);
         System.out.println("=======================================");
         for (Expense expense : expenses) {
@@ -32,6 +36,10 @@ public class AnalyticsService {
     }
 
     public void printIncomes(Income[] incomes) {
+        if (incomes == null || incomes.length == 0) {
+            System.out.println("+ No incomes found.");
+            return;
+        }
         System.out.println("+ Total Incomes: " + incomes.length);
         System.out.println("=======================================");
         for (Income income : incomes) {
@@ -43,6 +51,10 @@ public class AnalyticsService {
     }
 
     public void printBugets(Budget[] budgets) {
+        if (budgets == null || budgets.length == 0) {
+            System.out.println("+ No budgets found.");
+            return;
+        }
         System.out.println("+ Total Budgets: " + budgets.length);
         System.out.println("=======================================");
         for (Budget budget : budgets) {
@@ -55,6 +67,10 @@ public class AnalyticsService {
     }
 
     public void printGoals(Goal[] goals) {
+        if (goals == null || goals.length == 0) {
+            System.out.println("+ No goals found.");
+            return;
+        }
         System.out.println("+ Total Goals : " + goals.length);
         System.out.println("=======================================");
         for (Goal goal : goals) {
