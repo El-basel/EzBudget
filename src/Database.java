@@ -65,6 +65,7 @@ public class Database {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "category TEXT NOT NULL," +
                 "[limit] INTEGER NOT NULL," +
+                "spent INTEGER DEFAULT 0," +
                 "end_date DATE NOT NULL," +
                 "user_id INTEGER NOT NULL," +
                 "insertion_date TEXT DEFAULT (date('now'))," +
@@ -166,6 +167,27 @@ public class Database {
             return false;
         }
     }
+
+    /**
+     * Delete income from database
+     * @param source The source of the income
+     * @param amount The amount of the income
+     * @return true if the deletion succeeded otherwise false
+     */
+    public boolean deleteIncome(String source, int amount) {
+        String query = "DELETE FROM Income WHERE source = ? AND amount = ? AND user_id = ?;";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, source);
+            statement.setInt(2, amount);
+            statement.setInt(3, user_id);
+            int rows_affected = statement.executeUpdate();
+            return rows_affected > 0;
+        } catch (SQLException e) {
+//            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("Error deleting income");
+            return false;
+        }
+    }
     /**
      * Returns all incomes for the user currently registered
      * @return an array of type Income that corresponds to the registered user otherwise null is returned
@@ -229,6 +251,26 @@ public class Database {
             return false;
         }
 
+    }
+    /**
+     * Delete expense from database
+     * @param item The item of the expense
+     * @param amount The amount of the expense
+     * @return true if the deletion succeeded otherwise false
+     */
+    public boolean deleteExpense(String item, int amount) {
+        String query = "DELETE FROM Expense WHERE item = ? AND amount = ? AND user_id = ?;";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, item);
+            statement.setInt(2, amount);
+            statement.setInt(3, user_id);
+            int rows_affected = statement.executeUpdate();
+            return rows_affected > 0;
+        } catch (Exception e) {
+//            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("Error Inserting Expense");
+            return false;
+        }
     }
     /**
      * Returns all expenses for the user currently registered
@@ -316,6 +358,7 @@ public class Database {
             while(rs.next()) {
                 Budget budget = new Budget(rs.getString("category"), rs.getInt("limit"),
                        rs.getString("insertion_date"), rs.getString("end_date"));
+                budget.add(rs.getInt("spent"));
                 budgets.add(budget);
             }
             if(!budgets.isEmpty()) {
@@ -339,6 +382,7 @@ public class Database {
             if(rs.next()) {
                 Budget budget = new Budget(rs.getString("category"), rs.getInt("limit"),
                         rs.getString("insertion_date"), rs.getString("end_date"));
+                budget.add(rs.getInt("spent"));
                 return budget;
             }
             return null;
@@ -347,6 +391,22 @@ public class Database {
 //            System.out.println(e.getMessage());
 //            e.printStackTrace();
             return null;
+        }
+    }
+
+    public boolean addToBudget(String category, int spent) {
+        String query = "UPDATE Budget SET spent = spent + ? WHERE category = ? AND user_id = ?";
+        try(PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, spent);
+            statement.setString(2, category);
+            statement.setInt(3, user_id);
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error Adding to Budget");
+//            System.out.println(e.getMessage());
+//            e.printStackTrace();
+            return false;
         }
     }
     /**

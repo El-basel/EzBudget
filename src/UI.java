@@ -57,15 +57,16 @@ public class UI {
     private void displayLoggedInMenu() {
         while (loggedIn) {
             System.out.println("\n===== Welcome, " + currentUser.getUsername() + "! =====");
-            System.out.println("1. Add Income");
-            System.out.println("2. Track Expense");
-            System.out.println("3. Create Budget");
-            System.out.println("4. View Incomes");
-            System.out.println("5. View Expenses");
-            System.out.println("6. View Budgets");
-            System.out.println("7. Logout");
+            System.out.println("1. Add Income               2.  Track Expense");
+            System.out.println("3. Create Budget            4.  View Incomes");
+            System.out.println("5. View Expenses            6.  View Budgets");
+            System.out.println("7. Add Spending to a Budget 8.  Delete an Income");
+            System.out.println("9. Delete an Expense        10. Logout");
             System.out.print("Enter your choice: ");
-            int choice = getUserChoice(1, 7);
+            int choice = getUserChoice(1, 10);
+            String[] incomes = currentUser.Incomes();
+            String[] expenses = currentUser.expense();
+            String[] budgets = currentUser.budgets();
             switch (choice) {
                 case 1:
                     if (currentUser.addIncome())
@@ -86,7 +87,7 @@ public class UI {
                         System.out.println("Failed to create budget.");
                     break;
                 case 4:
-                    String[] incomes = currentUser.Incomes();
+
                     if (incomes.length == 0) {
                         System.out.println("No income records found.");
                     } else {
@@ -97,7 +98,7 @@ public class UI {
                     }
                     break;
                 case 5:
-                    String[] expenses = currentUser.expense();
+
                     if (expenses.length == 0) {
                         System.out.println("No expense records found.");
                     } else {
@@ -108,7 +109,6 @@ public class UI {
                     }
                     break;
                 case 6:
-                    String[] budgets = currentUser.budgets();
                     if (budgets.length == 0) {
                         System.out.println("No budget records found.");
                     } else {
@@ -119,6 +119,33 @@ public class UI {
                     }
                     break;
                 case 7:
+                    if (budgets.length == 0) {
+                        System.out.println("No budget records found.");
+                    } else if(currentUser.addToBudget()){
+                        System.out.println("Added spending to the budget.");
+                    } else {
+                        System.out.println("Failed to add to budget.");
+                    }
+                    break;
+                case 8:
+                    if(incomes.length == 0) {
+                        System.out.println("No income records found.");
+                    } else if(currentUser.deleteIncome()) {
+                        System.out.println("Income deleted successfully.");
+                    } else {
+                        System.out.println("Error deleting income.");
+                    }
+                    break;
+                case 9:
+                    if(expenses.length == 0) {
+                        System.out.println("No expense records found.");
+                    } else if(currentUser.deleteExpense()) {
+                        System.out.println("Expense deleted successfully.");
+                    } else {
+                        System.out.println("Error deleting expense.");
+                    }
+                    break;
+                case 10:
                     System.out.println("Logging out...");
                     loggedIn = false;
                     currentUser = null;

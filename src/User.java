@@ -61,7 +61,11 @@ public class User {
     public boolean addIncome() {
         return financialmanagement.addIncome();
     }
-
+    /**
+     * Deletes an income
+     * @return true if the deletion succeeded otherwise false
+     */
+    public boolean deleteIncome() {return financialmanagement.deleteIncome();}
     /**
      * Tracks an expense using the FinancialManagement instance.
      *
@@ -72,6 +76,11 @@ public class User {
     }
 
     /**
+     * Deletes an expense
+     * @return true if the deletion succeeded otherwise false
+     */
+    public boolean deleteExpense() {return financialmanagement.deleteExpense();}
+    /**
      * Creates a budget using the FinancialManagement instance.
      *
      * @return true if the budget was created successfully, false otherwise
@@ -79,6 +88,12 @@ public class User {
     public boolean createBudget() {
         return financialmanagement.createBudget();
     }
+
+    /**
+     * Add spending to a budget
+     * @return true if the addition succeeded otherwise false
+     */
+    public boolean addToBudget() {return financialmanagement.addToBudget();}
 
     /**
      * Retrieves all incomes as an array of strings.

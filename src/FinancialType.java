@@ -108,6 +108,8 @@ class Budget extends FinancialType {
     private String start_date = null;
     /** The end date of the budget period. */
     private String end_date = null;
+    /** Amount spent on the current budget*/
+    private int spent = 0;
     /**
      * Constructs a Budget with a category, amount, start date, and end date.
      * @param category The budget category
@@ -186,6 +188,11 @@ class Budget extends FinancialType {
     public void setLimit(int limit) {setAmount(limit);}
 
     /**
+     * Add spending to a budget
+     * @param spent the amount spent by the user
+     */
+    public void add(int spent) {this.spent = spent;}
+    /**
      * Overrides toString to provide a specific representation for Budgets.
      * @return A detailed string representation of the budget
      */
@@ -200,10 +207,11 @@ class Budget extends FinancialType {
                 ? "From " + start_date
                 : start_date + " - " + end_date));
 
-        return String.format("Budget Category: %s, Budget Limit: $%d, Period: %s",
+        return String.format("Budget Category: %s, Budget Limit: $%d, Period: %s, Spent: $%d",
                 description == null ? "Unspecified" : description,
                 amount,
-                periodString);
+                periodString,
+                spent);
     }
 }
 

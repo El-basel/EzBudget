@@ -86,6 +86,7 @@ public class FinancialManagement {
             return true;
         } catch (DateTimeParseException e) {
             System.err.println(input + " is not a valid date");
+            System.err.println("Date have the following format (YYYY-MM-DD), single digit days or month must be preceded by 0");
             return false;
         }
     }
@@ -111,6 +112,26 @@ public class FinancialManagement {
         }
         Income income = new Income(source, amount);
         return database.insertIncome(income);
+    }
+
+    /**
+     * Deletes an expense
+     * @return true if the deletion succeeded otherwise false
+     */
+    public boolean deleteIncome() {
+        System.out.println("Enter Income Source: ");
+        String source = scanner.nextLine();
+        if(source.isBlank()) {
+            System.out.println("Empty input");
+            return false;
+        }
+        System.out.println("Enter Income Amount: ");
+        String unparsed_amount = scanner.nextLine();
+        int amount = parse_int(unparsed_amount, "is not a valid amount, it should be a number");
+        if(amount == -1){
+            return false;
+        }
+        return database.deleteIncome(source, amount);
     }
 
     /**
@@ -162,7 +183,7 @@ public class FinancialManagement {
             System.out.println("Empty input");
             return false;
         }
-        System.out.println("Insert Income Amount: ");
+        System.out.println("Insert Expense Amount: ");
         String unparsed_amount = scanner.nextLine();
         int amount = parse_int(unparsed_amount, "is not a valid amount, it should be a number");
         if(amount == -1){
@@ -171,6 +192,25 @@ public class FinancialManagement {
         Expense expense = new Expense(item, amount);
 
         return database.insertExpense(expense);
+    }
+    /**
+     * Deletes an expense
+     * @return true if the deletion succeeded otherwise false
+     */
+    public boolean deleteExpense() {
+        System.out.println("Enter Item Name: ");
+        String item = scanner.nextLine();
+        if(item.isBlank()) {
+            System.out.println("Empty input");
+            return false;
+        }
+        System.out.println("Enter Expense Amount: ");
+        String unparsed_amount = scanner.nextLine();
+        int amount = parse_int(unparsed_amount, "is not a valid amount, it should be a number");
+        if(amount == -1){
+            return false;
+        }
+        return database.deleteExpense(item, amount);
     }
 
     /**
@@ -284,6 +324,25 @@ public class FinancialManagement {
         return database.retrieveBudgets();
     }
 
+    /**
+     * Add spending to a budget
+     * @return true if the addition succeeded otherwise false
+     */
+    public boolean addToBudget() {
+        System.out.println("Enter The Category Name: ");
+        String category = scanner.nextLine();
+        if(category.isBlank()) {
+            System.out.println("Empty input");
+            return false;
+        }
+        System.out.println("Enter The Add Amount: ");
+        String unparsed_spent = scanner.nextLine();
+        int spent = parse_int(unparsed_spent, "is not a valid amount, it should be a number");
+        if(spent == -1){
+            return false;
+        }
+        return database.addToBudget(category, spent);
+    }
 
     /**
      * Analyzes financial data within a specified date range using the analytics service.
