@@ -67,18 +67,6 @@ public class Planning {
     }
 
     /**
-     * Adds a new financial goal to the database.
-     *
-     * @param target The goal's target amount
-     * @param saving_amount The monthly saving amount
-     * @param description A brief description of the goal
-     */
-    public void setGoal(int target, int saving_amount, String description){
-        Goal goal = new Goal(target, saving_amount,  description);
-        database.insertGoal(goal);
-    }
-
-    /**
      * Prompts the user to create a new goal with input validation.
      *
      * @return true if the goal was successfully created and stored, otherwise false

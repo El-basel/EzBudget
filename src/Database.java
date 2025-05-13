@@ -659,31 +659,6 @@ public class Database {
     }
 
     /**
-     * Retrieves a reminder based on its ID.
-     *
-     * @param reminderID The ID of the reminder to retrieve
-     * @return The Reminder object or null if not found
-     */
-    public Reminder getReminderById(int reminderID) {
-        String query = "SELECT * FROM Reminder WHERE id = ? AND user_id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, reminderID);
-            statement.setInt(2, user_id);
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()) {
-                return new Reminder(rs.getString("title"), rs.getString("reminder_date"),
-                        rs.getString("message"));
-            }
-            return null;
-        } catch (Exception e) {
-            System.out.println("Error retrieving reminder by ID");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
      * Returns the currently logged-in user.
      *
      * @return The User object for the currently logged-in user or null if not available

@@ -5,13 +5,9 @@ import java.sql.SQLOutput;
 public class AnalyticsService {
     private static AnalyticsService instance;
     private Database database;
-    private Planning planning;
-//    private FinancialManagement financialManagement;
 
     private AnalyticsService() {
         this.database = Database.getInstance();
-//        this.financialManagement = FinancialManagement.getInstance();
-        this.planning = Planning.getInstance();
     }
 
     public static AnalyticsService getInstance() {
@@ -21,7 +17,7 @@ public class AnalyticsService {
         return instance;
     }
 
-    public void printExpenses(Expense[] expenses) {
+    private void printExpenses(Expense[] expenses) {
         if (expenses == null || expenses.length == 0) {
             System.out.println("+ No expenses found.");
             return;
@@ -35,7 +31,7 @@ public class AnalyticsService {
         }
     }
 
-    public void printIncomes(Income[] incomes) {
+    private void printIncomes(Income[] incomes) {
         if (incomes == null || incomes.length == 0) {
             System.out.println("+ No incomes found.");
             return;
@@ -50,7 +46,7 @@ public class AnalyticsService {
 
     }
 
-    public void printBugets(Budget[] budgets) {
+    private void printBugets(Budget[] budgets) {
         if (budgets == null || budgets.length == 0) {
             System.out.println("+ No budgets found.");
             return;
@@ -66,7 +62,7 @@ public class AnalyticsService {
         }
     }
 
-    public void printGoals(Goal[] goals) {
+    private void printGoals(Goal[] goals) {
         if (goals == null || goals.length == 0) {
             System.out.println("+ No goals found.");
             return;
@@ -99,7 +95,7 @@ public class AnalyticsService {
         Expense[] expenses = database.retrieveExpenseFromPeriod(start, end);
         Income[] incomes = database.retrieveIncomes();
         Budget[] budgets = database.retrieveBudgets();
-        Goal[] goals = planning.getGoals();
+        Goal[] goals = database.retrieveGoals();
 
         int totalExpenses = database.expenseSum(start, end);
         int totalIncome = database.incomeSum(start, end);

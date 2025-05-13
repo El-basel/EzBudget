@@ -89,16 +89,6 @@ public class NotificationService {
     }
 
     /**
-     * Helper method to retrieve a reminder by its ID from the database.
-     *
-     * @param reminderID The ID of the reminder to retrieve
-     * @return The Reminder object or null if not found
-     */
-    private Reminder getReminderById(int reminderID) {
-        return database.getReminderById(reminderID);
-    }
-
-    /**
      * Sends an email notification based on the reminder details.
      *
      * @param recipientEmail The email address of the recipient
