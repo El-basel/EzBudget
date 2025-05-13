@@ -71,6 +71,10 @@ public class NotificationService {
             }
         }
 
+        if (!database.deleteTodayReminders()) {
+            System.out.println("Failed to delete today's reminders.");
+        }
+
         return sentCount;
     }
 
@@ -128,6 +132,7 @@ public class NotificationService {
             message.setText(content);
 
             Transport.send(message);
+            System.out.println();
             System.out.println("Notification sent successfully to " + recipientEmail);
             return true;
 

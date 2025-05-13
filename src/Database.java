@@ -704,4 +704,23 @@ public class Database {
             return null;
         }
     }
+
+    /**
+     * Deletes all reminders scheduled for today for the current user.
+     *
+     * @return True if today's reminders got deleted, or false otherwise
+     */
+    public boolean deleteTodayReminders() {
+        String query = "DELETE FROM Reminder WHERE user_id = ? AND date(reminder_date) = date('now')";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            int rowsDeleted = statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error deleting today's reminders");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
